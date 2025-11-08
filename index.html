@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Contas a Pagar - Equipe de Custos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.7.0"
+        }
+      }
+    </script>
+    <script type="module" src="index.js"></script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50">
+        <div class="w-full max-w-md mx-auto p-8">
+            <div class="text-center mb-8">
+                <i class="fas fa-file-invoice-dollar text-teal-400 text-5xl mb-4"></i>
+                <h1 class="text-3xl font-bold text-slate-100" data-translate="login_title">Sistema de Contas a Pagar</h1>
+                <p class="text-slate-400">Equipe de Custos</p>
+            </div>
+            <div class="bg-slate-800 p-8 rounded-xl shadow-lg">
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="username" class="block text-sm font-medium text-slate-400 mb-1" data-translate="login_email_label">Email</label>
+                        <input type="email" id="username" name="username" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" autocomplete="email">
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-slate-400 mb-1" data-translate="login_password_label">Senha</label>
+                        <input type="password" id="password" name="password" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" autocomplete="current-password">
+                    </div>
+                    <p id="login-error" class="hidden text-red-500 text-center text-sm mb-4" data-translate="login_error">Usuário ou senha inválidos.</p>
+                    <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition-colors" data-translate="login_button">Entrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App Container -->
+    <div id="app-container" class="hidden">
+        <div class="flex flex-col min-h-screen">
+            <!-- Header -->
+            <header class="bg-slate-800/50 backdrop-blur-sm shadow-md sticky top-0 z-20">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-invoice-dollar text-teal-400 text-2xl mr-3"></i>
+                            <h1 class="text-xl font-bold text-slate-100" data-translate="header_title">Controle de Contas a Pagar</h1>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <!-- Language Switcher -->
+                            <div class="relative">
+                                <button id="lang-switcher-button" class="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors text-sm">
+                                    <img id="current-lang-flag" src="https://flagcdn.com/br.svg" alt="Brasil Flag" class="w-6 h-auto rounded-sm">
+                                    <span id="current-lang-text">PT-BR</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                <div id="lang-switcher-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-slate-700 rounded-md shadow-lg py-1 z-30">
+                                    <a href="#" data-lang="pt-BR" class="lang-option flex items-center gap-3 px-4 py-2 text-sm text-slate-200 hover:bg-slate-600">
+                                        <img src="https://flagcdn.com/br.svg" alt="Brasil Flag" class="w-6 h-auto rounded-sm"> Português (BR)
+                                    </a>
+                                    <a href="#" data-lang="en" class="lang-option flex items-center gap-3 px-4 py-2 text-sm text-slate-200 hover:bg-slate-600">
+                                        <img src="https://flagcdn.com/gb.svg" alt="UK Flag" class="w-6 h-auto rounded-sm"> English
+                                    </a>
+                                    <a href="#" data-lang="zh-CN" class="lang-option flex items-center gap-3 px-4 py-2 text-sm text-slate-200 hover:bg-slate-600">
+                                        <img src="https://flagcdn.com/cn.svg" alt="China Flag" class="w-6 h-auto rounded-sm"> 简体中文
+                                    </a>
+                                </div>
+                            </div>
+    
+                            <div id="main-header-buttons">
+                                <button onclick="openModal('modal-fornecedor')" class="text-sm bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-building mr-2"></i><span data-translate="header_suppliers_button">Fornecedores</span>
+                                </button>
+                                <button onclick="openModal('modal-categoria')" class="text-sm bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-tags mr-2"></i><span data-translate="header_categories_button">Categorias</span>
+                                </button>
+                                <button onclick="openModal('modal-settings')" class="text-sm bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-cog mr-2"></i><span data-translate="header_settings_button">Configurações</span>
+                                </button>
+                            </div>
+
+                            <!-- User Info -->
+                            <div id="user-info" class="hidden items-center gap-4">
+                               <div class="h-8 border-l border-slate-600"></div>
+                               <span class="text-sm font-medium"><span data-translate="header_welcome">Olá</span>, <span id="username-display" class="font-bold"></span></span>
+                                <button onclick="logout()" class="text-sm bg-red-600/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="fas fa-sign-out-alt"></i><span data-translate="header_logout_button">Sair</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+    
+            <!-- Main Content -->
+            <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- Dashboard Stats -->
+                <section id="dashboard-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Cards serão injetados pelo JS -->
+                </section>
+                
+                <!-- Tabs Navigation -->
+                 <div class="border-b border-slate-700 mb-6">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <button onclick="setActiveView('lancamentos')" data-view="lancamentos" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors" data-translate="tab_entries">Lançamentos</button>
+                        <button onclick="setActiveView('controle-orcamentario')" data-view="controle-orcamentario" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_budget_control">Controle Orçamentário</button>
+                        <button onclick="setActiveView('fluxo-caixa')" data-view="fluxo-caixa" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_cash_flow">Fluxo de Caixa</button>
+                        <button onclick="setActiveView('conciliacao')" data-view="conciliacao" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_conciliation">Conciliação</button>
+                        <button onclick="setActiveView('analise')" data-view="analise" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_analysis">Análise Gráfica</button>
+                        <button onclick="setActiveView('bl')" data-view="bl" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_cost_bl">Custos por BL</button>
+                        <button onclick="setActiveView('po')" data-view="po" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_cost_po">Custos por PO</button>
+                        <button onclick="setActiveView('di')" data-view="di" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_cost_di">Custos por DI</button>
+                        <button onclick="setActiveView('fupReport')" data-view="fupReport" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_fup_report">Relatório FUP</button>
+                        <button onclick="setActiveView('database')" data-view="database" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-colors" data-translate="tab_database">Banco de Dados</button>
+                    </nav>
+                </div>
+    
+    
+                <!-- Views Container -->
+                <div>
+                    <!-- Lançamentos View -->
+                    <div id="lancamentos-view" class="view-container active">
+                        <div class="bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+                            <div class="p-6">
+                                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                                    <h2 class="text-lg font-bold text-slate-100" data-translate="entries_title">Lançamentos (CP)</h2>
+                                    <div class="flex items-center gap-2 order-first sm:order-last">
+                                        <button id="upload-historico-btn" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
+                                            <i class="fas fa-upload"></i><span data-translate="upload_history_button">upload Historico</span>
+                                        </button>
+                                        <input type="file" id="historico-upload-input" class="hidden" accept=".xlsx, .xls">
+                                        <button onclick="openModal('modal-cp')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex-shrink-0 transition-transform transform hover:scale-105">
+                                            <i class="fas fa-plus mr-2"></i><span data-translate="new_entry_button">Novo Lançamento</span>
+                                        </button>
+                                    </div>
+                                </div>
+    
+                                <!-- Filter Bar -->
+                                <div class="bg-slate-900/50 p-4 rounded-lg mb-4 flex flex-wrap items-center gap-4">
+                                    <div class="relative flex-grow w-full sm:w-auto">
+                                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                        <input type="text" id="searchInput" data-translate-placeholder="filter_search_placeholder" placeholder="Buscar por CP, Fornecedor, MIGO..." class="bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label for="status-filter" class="text-sm text-slate-400" data-translate="filter_status_label">Status:</label>
+                                        <select id="status-filter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                            <option value="all" data-translate="filter_status_all">Todos Status</option>
+                                            <option value="Pendente" data-translate="filter_status_pending">Pendente</option>
+                                            <option value="Atrasado" data-translate="filter_status_overdue">Atrasado</option>
+                                            <option value="Pago" data-translate="filter_status_paid">Pago</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label for="date-filter-start" class="text-sm text-slate-400" data-translate="filter_date_from">De:</label>
+                                        <input type="date" id="date-filter-start" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                         <label for="date-filter-end" class="text-sm text-slate-400" data-translate="filter_date_to">Até:</label>
+                                        <input type="date" id="date-filter-end" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    </div>
+                                    <button id="clear-filters-btn" class="hidden bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-4 rounded-lg transition-colors">
+                                        <i class="fas fa-times mr-2"></i><span data-translate="clear_filters_button">Limpar Filtros</span>
+                                    </button>
+                                </div>
+    
+    
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-slate-700">
+                                        <thead class="bg-slate-900/50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_cp_number">Nº CP</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_approval_status">Aprovação</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_status">Status</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_due_date">Vencimento</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_payment_term">Cond. Pagamento</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_supplier">Fornecedor</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_category">Categoria</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_value">Valor</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_references">Referências</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_voyage">Voyage</th>
+                                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_actions">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cp-table-body" class="bg-slate-800 divide-y divide-slate-700">
+                                            <!-- Linhas da tabela serão injetadas pelo JS -->
+                                        </tbody>
+                                    </table>
+                                    <div id="lancamentos-empty-state" class="hidden text-center py-16">
+                                        <i class="fas fa-folder-open text-4xl text-slate-500 mb-4"></i>
+                                        <p id="empty-state-message" class="text-slate-500" data-translate="empty_state_no_entries">Nenhum lançamento encontrado.</p>
+                                        <p class="text-slate-600 text-sm" data-translate="empty_state_get_started">Clique em "Novo Lançamento" para começar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controle Orçamentário View -->
+                    <div id="controle-orcamentario-view" class="view-container hidden">
+                        <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                                <h2 class="text-lg font-bold text-slate-100" data-translate="budget_control_title">Controle Orçamentário (Orçado vs. Realizado)</h2>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <label for="budget-month-select" class="text-sm">Mês:</label>
+                                        <select id="budget-month-select" class="bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></select>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                         <label for="budget-year-select" class="text-sm">Ano:</label>
+                                        <select id="budget-year-select" class="bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></select>
+                                    </div>
+                                    <button onclick="openModal('modal-orcamento')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                        <i class="fas fa-edit mr-2"></i><span data-translate="budget_set_button">Definir Orçamento</span>
+                                    </button>
+                                </div>
+                            </div>
+                             <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead class="bg-slate-900/50">
+                                        <tr>
+                                            <th class="w-2/5 px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_category">Categoria</th>
+                                            <th class="w-1/5 px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_budgeted">Orçado</th>
+                                            <th class="w-1/5 px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_actual">Realizado</th>
+                                            <th class="w-1/5 px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_variance">Diferença</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orcamento-table-body" class="bg-slate-800 divide-y divide-slate-700">
+                                        <!-- Budget table rows will be injected by JS -->
+                                    </tbody>
+                                </table>
+                                 <div id="orcamento-empty-state" class="hidden text-center py-16">
+                                    <i class="fas fa-calculator text-4xl text-slate-500 mb-4"></i>
+                                    <p class="text-slate-500" data-translate="budget_empty_state">Nenhum dado orçamentário para o período selecionado.</p>
+                                    <p class="text-slate-600 text-sm" data-translate="budget_empty_state_hint">Clique em "Definir Orçamento" para começar.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fluxo de Caixa View -->
+                    <div id="fluxo-caixa-view" class="view-container hidden">
+                        <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                                <h2 class="text-lg font-bold text-slate-100" data-translate="cash_flow_title">Fluxo de Caixa</h2>
+                                <div class="flex items-center gap-2">
+                                    <label for="cash-flow-period" class="text-sm text-slate-400" data-translate="cash_flow_period_label">Período:</label>
+                                    <select id="cash-flow-period" class="bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                        <option value="this_month" data-translate="cash_flow_period_this_month">Este Mês</option>
+                                        <option value="next_30_days" data-translate="cash_flow_period_next_30">Próximos 30 Dias</option>
+                                        <option value="this_quarter" data-translate="cash_flow_period_this_quarter">Este Trimestre</option>
+                                    </select>
+                                    <button onclick="openModal('modal-cash-entry')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex-shrink-0 transition-colors">
+                                        <i class="fas fa-plus mr-2"></i><span data-translate="cash_flow_new_entry_button">Nova Entrada/Saída</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Cash Flow KPIs -->
+                            <section id="cash-flow-kpis" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <!-- KPI Cards will be injected here -->
+                            </section>
+                            
+                            <!-- Cash Flow Chart -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-semibold text-slate-100 mb-4" data-translate="cash_flow_chart_title">Posição de Caixa Diária (Estimado vs. Realizado)</h3>
+                                <div class="relative h-96 chart-container bg-slate-900/50 rounded-lg p-4">
+                                    <canvas id="cash-flow-chart"></canvas>
+                                    <div id="cash-flow-chart-empty-state" class="chart-empty-state">
+                                        <i class="fas fa-chart-line text-4xl text-slate-500 mb-4"></i>
+                                        <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cash Flow Table -->
+                             <div class="overflow-x-auto">
+                                <h3 class="text-md font-semibold text-slate-100 mb-4" data-translate="cash_flow_table_title">Movimentações de Caixa</h3>
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_date">Data</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_description">Descrição</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_reference">Referência</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_type">Tipo</th>
+                                            <th class="px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_estimated">Valor Estimado</th>
+                                            <th class="px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_realized">Valor Realizado</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="cash_flow_table_header_status">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cash-flow-table-body" class="bg-slate-800 divide-y divide-slate-700">
+                                        <!-- Table rows will be injected here -->
+                                    </tbody>
+                                </table>
+                                <div id="cash-flow-table-empty-state" class="hidden text-center py-16">
+                                    <i class="fas fa-exchange-alt text-4xl text-slate-500 mb-4"></i>
+                                    <p class="text-slate-500" data-translate="cash_flow_table_empty">Nenhuma movimentação no período.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Conciliação View -->
+                    <div id="conciliacao-view" class="view-container hidden">
+                        <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-bold text-slate-100" data-translate="conciliation_title">Conciliação de Adiantamentos</h2>
+                                <div class="flex items-center space-x-3">
+                                    <label for="conciliation-filter-toggle" class="text-sm font-medium text-slate-300" data-translate="conciliation_filter_pending_only">Mostrar somente pendentes</label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="conciliation-filter-toggle" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-focus:ring-4 peer-focus:ring-teal-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_cp_number">Nº CP</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_supplier">Fornecedor</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_due_date">Vencimento</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_value">Valor</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_reconciliation_status">Status Conciliação</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="table_header_actions">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="conciliacao-table-body" class="bg-slate-800 divide-y divide-slate-700">
+                                        <!-- Reconciliation data will be injected here -->
+                                    </tbody>
+                                </table>
+                                <div id="conciliacao-empty-state" class="hidden text-center py-16">
+                                    <i class="fas fa-check-double text-4xl text-slate-500 mb-4"></i>
+                                    <p class="text-slate-500" data-translate="conciliation_empty_state">Nenhum adiantamento encontrado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Análise Gráfica View -->
+                    <div id="analise-view" class="view-container hidden">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                            <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                                <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="analysis_chart_title_by_category">Despesas por Categoria</h2>
+                                <div class="relative h-96 chart-container">
+                                    <canvas id="category-pie-chart"></canvas>
+                                    <div id="category-chart-empty-state" class="chart-empty-state">
+                                        <i class="fas fa-chart-pie text-4xl text-slate-500 mb-4"></i>
+                                        <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                                <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="analysis_chart_title_top_suppliers">Top 5 Fornecedores</h2>
+                                <div class="relative h-96 chart-container">
+                                    <canvas id="top-suppliers-bar-chart"></canvas>
+                                     <div id="suppliers-chart-empty-state" class="chart-empty-state">
+                                        <i class="fas fa-building text-4xl text-slate-500 mb-4"></i>
+                                        <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800 rounded-xl shadow-lg p-6 xl:col-span-2">
+                                 <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="analysis_chart_title_monthly_payments">Pagamentos Mensais (Últimos 12 Meses)</h2>
+                                <div class="relative h-96 chart-container">
+                                    <canvas id="monthly-payments-column-chart"></canvas>
+                                     <div id="monthly-chart-empty-state" class="chart-empty-state">
+                                        <i class="fas fa-chart-column text-4xl text-slate-500 mb-4"></i>
+                                        <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Custos por BL View -->
+                    <div id="bl-view" class="view-container hidden">
+                        <div class="mb-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="text" id="bl-filter-input" data-translate-placeholder="filter_bl_placeholder" placeholder="Buscar por BL..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                        <div id="bl-list" class="space-y-4">
+                            <!-- Conteúdo da aba BL será injetado pelo JS -->
+                        </div>
+                         <div id="bl-empty-state" class="hidden text-center py-16 bg-slate-800 rounded-xl">
+                            <i class="fas fa-ship text-4xl text-slate-500 mb-4"></i>
+                            <p class="text-slate-500" data-translate="bl_empty_state">Nenhum custo associado a um BL encontrado.</p>
+                        </div>
+                    </div>
+    
+                    <!-- Custos por PO View -->
+                    <div id="po-view" class="view-container hidden">
+                        <div class="mb-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="text" id="po-filter-input" data-translate-placeholder="filter_po_placeholder" placeholder="Buscar por PO..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                        <div id="po-list" class="space-y-4">
+                           <!-- Conteúdo da aba PO será injetado pelo JS -->
+                        </div>
+                         <div id="po-empty-state" class="hidden text-center py-16 bg-slate-800 rounded-xl">
+                            <i class="fas fa-box-open text-4xl text-slate-500 mb-4"></i>
+                            <p class="text-slate-500" data-translate="po_empty_state">Nenhum custo associado a um PO encontrado.</p>
+                        </div>
+                    </div>
+    
+                    <!-- Custos por DI View -->
+                    <div id="di-view" class="view-container hidden">
+                         <div class="mb-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="text" id="di-filter-input" data-translate-placeholder="filter_di_placeholder" placeholder="Buscar por Nº DI..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                        <div id="di-list" class="space-y-4">
+                           <!-- Conteúdo da aba DI será injetado pelo JS -->
+                        </div>
+                         <div id="di-empty-state" class="hidden text-center py-16 bg-slate-800 rounded-xl">
+                            <i class="fas fa-file-invoice-dollar text-4xl text-slate-500 mb-4"></i>
+                            <p class="text-slate-500" data-translate="di_empty_state">Nenhum custo associado a um Nº de DI encontrado.</p>
+                        </div>
+                    </div>
+    
+                    <!-- Relatório FUP View -->
+                    <div id="fupReport-view" class="view-container hidden">
+                        <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                             <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                                <h2 class="text-lg font-bold text-slate-100" data-translate="fup_title">Relatório FUP - Custos Consolidados por Operação</h2>
+                                <button id="export-fup-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-auto flex-shrink-0 transition-transform transform hover:scale-105">
+                                    <i class="fas fa-file-excel mr-2"></i><span data-translate="fup_export_xlsx">Exportar XLSX</span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-4" data-translate="fup_description">Este relatório consolida todos os custos agrupados por BL e PO. Os filtros de data aplicados na aba "Lançamentos" também se aplicam aqui.</p>
+                            <div class="overflow-x-auto">
+                                <table id="fup-report-table" class="min-w-full divide-y divide-slate-700 text-xs">
+                                    <!-- Cabeçalho e corpo da tabela serão injetados pelo JS -->
+                                </table>
+                                 <div id="fup-report-empty-state" class="hidden text-center py-16">
+                                    <i class="fas fa-file-excel text-4xl text-slate-500 mb-4"></i>
+                                    <p class="text-slate-500" data-translate="fup_empty_state">Nenhum dado de operação encontrado para gerar o relatório.</p>
+                                    <p class="text-slate-600 text-sm" data-translate="fup_empty_state_hint">Certifique-se de que os lançamentos possuem BL e PO preenchidos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Banco de Dados View -->
+                    <div id="database-view" class="view-container hidden">
+                        <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                            <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="database_title">Banco de Dados - FUP</h2>
+                            
+                            <div class="mb-6">
+                                <label for="fup-upload-input" class="flex justify-center w-full h-32 px-4 transition bg-slate-900/50 border-2 border-slate-700 border-dashed rounded-md appearance-none cursor-pointer hover:border-teal-400 focus:outline-none">
+                                    <span class="flex items-center space-x-2">
+                                        <i class="fas fa-upload text-slate-500"></i>
+                                        <span class="font-medium text-slate-500" data-translate="database_upload_prompt">
+                                            Clique para carregar o arquivo FUP (.xlsx)
+                                        </span>
+                                    </span>
+                                    <input type="file" id="fup-upload-input" class="hidden" accept=".xlsx, .xls">
+                                </label>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                    <input type="text" id="fup-database-search" data-translate-placeholder="filter_db_placeholder" placeholder="Buscar por BL/AWB, PO SAP, Navio ou Nº DI..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                </div>
+                            </div>
+    
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_bl">BL/AWB</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_po">PO SAP</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_vessel">Navio</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_voyage">Voyage</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_di">Nº DI</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider" data-translate="database_table_header_eta">ETA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fup-database-table-body" class="bg-slate-800 divide-y divide-slate-700">
+                                        <!-- FUP data will be injected here -->
+                                    </tbody>
+                                </table>
+                                <div id="fup-database-empty-state" class="hidden text-center py-16">
+                                    <i class="fas fa-database text-4xl text-slate-500 mb-4"></i>
+                                    <p class="text-slate-500" data-translate="database_empty_state">Nenhum dado de FUP carregado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+            </main>
+        </div>
+    
+        <!-- Modal Novo Lançamento CP -->
+        <div id="modal-cp" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-5xl m-4 modal-content">
+                <form id="form-cp" class="p-8 max-h-[90vh] overflow-y-auto">
+                    <input type="hidden" id="cp-id">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-2xl font-bold mb-2 text-slate-100 flex items-center"><i class="fas fa-file-invoice text-teal-400 mr-3"></i><span id="cp-modal-title" data-translate="cp_modal_title_new">Novo Lançamento de CP</span></h3>
+                        <p id="cp-number-display" class="hidden font-mono text-sm bg-slate-900 px-3 py-1 rounded-md text-teal-400"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label for="cp-fornecedor" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_supplier">Fornecedor</span> *</label>
+                            <select id="cp-fornecedor" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></select>
+                        </div>
+                        <div>
+                            <label for="cp-categoria" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_category_expense">Categoria/Despesa</span> *</label>
+                            <select id="cp-categoria" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></select>
+                        </div>
+                    </div>
+    
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-6">
+                        <h4 class="text-md font-semibold text-slate-300 mb-3" data-translate="form_section_operation_data">Dados da Operação</h4>
+                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div>
+                                <label for="cp-bl" class="block text-sm font-medium text-slate-400 mb-1">BL *</label>
+                                <input type="text" id="cp-bl" placeholder="Ex: COSU..." required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-po" class="block text-sm font-medium text-slate-400 mb-1">PO *</label>
+                                <input type="text" id="cp-po" placeholder="Ex: PO12345" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-sap-po" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_sap_po">PO SAP</label>
+                                <input type="text" id="cp-sap-po" data-translate-placeholder="form_placeholder_sap_po" placeholder="Ex: 4500..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-sap-po-emission-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_sap_po_emission_date">Data Emissão PO SAP</label>
+                                <input type="date" id="cp-sap-po-emission-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-pr-number" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_pr_number">Nº da PR</label>
+                                <input type="text" id="cp-pr-number" placeholder="Ex: 100..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-pr-emission-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_pr_emission_date">Data Emissão PR</label>
+                                <input type="date" id="cp-pr-emission-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div>
+                                <label for="cp-di-number" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_di_number">Nº da DI</label>
+                                <input type="text" id="cp-di-number" placeholder="Ex: 23/1234567-8" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-di-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_di_date">Data DI</label>
+                                <input type="date" id="cp-di-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-cost-center" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_cost_center">Centro de Custo</label>
+                                <input type="text" id="cp-cost-center" placeholder="Ex: 1101" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-cargo" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_cargo">Carga</label>
+                                <input type="text" id="cp-cargo" data-translate-placeholder="form_placeholder_cargo" placeholder="Ex: VEÍCULOS" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div>
+                                <label for="cp-incoterm" class="block text-sm font-medium text-slate-400 mb-1">Incoterm</label>
+                                <input type="text" id="cp-incoterm" placeholder="Ex: FOB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-vessel-name" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_vessel_name">Nome do Navio</label>
+                                <input type="text" id="cp-vessel-name" placeholder="Ex: MSC MARY" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-voyage" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_voyage">Voyage</label>
+                                <input type="text" id="cp-voyage" placeholder="Ex: UX547R" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                         </div>
+                    </div>
+    
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-6">
+                        <h4 class="text-md font-semibold text-slate-300 mb-3" data-translate="form_section_sap_docs">Documentos de Referência (SAP)</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="cp-nf" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_nf_number">Nº da NF</label>
+                                <input type="text" id="cp-nf" placeholder="Ex: 98765" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-nf-emission-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_nf_emission_date">Data Emissão NF</label>
+                                <input type="date" id="cp-nf-emission-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-nf-type" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_nf_type">Tipo de NF</label>
+                                <input type="text" id="cp-nf-type" placeholder="Ex: Serviço" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div>
+                                <label for="cp-cfop" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_cfop">CFOP</label>
+                                <input type="text" id="cp-cfop" placeholder="Ex: 5102" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-nf-import-number" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_nf_import_number">Nº NF Importação</label>
+                                <input type="text" id="cp-nf-import-number" placeholder="Ex: 12345" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div>
+                                <label for="cp-migo" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_migo_number">Nº MIGO</label>
+                                <input type="text" id="cp-migo" placeholder="Ex: 49001..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-miro" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_miro_number">Nº MIRO</label>
+                                <input type="text" id="cp-miro" placeholder="Ex: 51001..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 items-end">
+                        <div>
+                            <label for="cp-vencimento" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_due_date">Data de Vencimento</span> *</label>
+                            <input type="date" id="cp-vencimento" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                         <div id="payment-date-wrapper" class="hidden">
+                            <label for="cp-payment-date" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_payment_date">Data de Pagamento</span></label>
+                            <input type="date" id="cp-payment-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label for="cp-payment-term" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_payment_term">Cond. Pagamento</label>
+                            <input type="text" id="cp-payment-term" data-translate-placeholder="form_placeholder_payment_term" placeholder="Ex: 30 dias" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label for="cp-payment-method" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_payment_method">Método de Pagamento</label>
+                            <input type="text" id="cp-payment-method" placeholder="Ex: TED" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                        <div class="md:col-span-2 grid grid-cols-2 gap-2">
+                             <div>
+                                <label for="cp-currency" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_currency">Moeda</span> *</label>
+                                <select id="cp-currency" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    <option value="BRL">BRL</option>
+                                    <option value="USD">USD</option>
+                                    <option value="CNY">CNY</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="cp-valor-original" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_value">Valor</span> *</label>
+                                <input type="number" step="0.01" id="cp-valor-original" placeholder="1500,00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="cp-status" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_status">Status</span> *</label>
+                            <select id="cp-status" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                <option value="Pendente" data-translate="status_pending">Pendente</option>
+                                <option value="Pago" data-translate="status_paid">Pago</option>
+                            </select>
+                        </div>
+                         <div class="flex items-center pb-1">
+                            <input id="cp-is-adiantamento" type="checkbox" class="h-4 w-4 rounded border-slate-600 text-teal-500 bg-slate-800 focus:ring-teal-600">
+                            <label for="cp-is-adiantamento" class="ml-2 text-sm font-medium text-slate-300" data-translate="form_label_is_adiantamento">Adiantamento?</label>
+                        </div>
+                    </div>
+    
+                    <div class="mt-6">
+                        <label for="cp-observacoes" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_observations">Observações</label>
+                        <textarea id="cp-observacoes" rows="2" data-translate-placeholder="form_placeholder_observations" placeholder="Informações adicionais sobre este lançamento..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></textarea>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end items-center gap-4">
+                         <button type="button" onclick="closeModal('modal-cp')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_cancel">Cancelar</button>
+                        <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_save">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal Fornecedores -->
+        <div id="modal-fornecedor" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg m-4 modal-content">
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-slate-100 flex items-center"><i class="fas fa-building text-teal-400 mr-3"></i><span data-translate="suppliers_modal_title">Cadastro de Fornecedores</span></h3>
+                    <form id="form-fornecedor" class="mb-6">
+                        <input type="hidden" id="fornecedor-id">
+                        <div class="flex gap-4">
+                            <input type="text" id="fornecedor-nome" data-translate-placeholder="form_placeholder_supplier_name" placeholder="Nome do Fornecedor" required class="flex-grow bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </form>
+                    <div class="max-h-80 overflow-y-auto pr-2">
+                        <ul id="fornecedor-list" class="space-y-2">
+                            <!-- Lista de fornecedores será injetada pelo JS -->
+                        </ul>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <button type="button" onclick="closeModal('modal-fornecedor')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_close">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Modal Categorias -->
+        <div id="modal-categoria" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg m-4 modal-content">
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-slate-100 flex items-center"><i class="fas fa-tags text-teal-400 mr-3"></i><span data-translate="categories_modal_title">Cadastro de Categorias</span></h3>
+                    <form id="form-categoria" class="mb-6 space-y-4">
+                        <input type="hidden" id="categoria-id">
+                        <div class="flex gap-4">
+                             <input type="text" id="categoria-grupo" data-translate-placeholder="form_placeholder_category_group" placeholder="Grupo da Categoria (Ex: Custos Fixos)" required class="w-1/2 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            <input type="text" id="categoria-nome" data-translate-placeholder="form_placeholder_category_name" placeholder="Nome da Categoria" required class="flex-grow bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <label class="block text-sm font-medium text-slate-400" data-translate="form_label_category_type">Tipo:</label>
+                            <div class="flex items-center">
+                                <input id="categoria-type-receita" name="categoria-type" type="radio" value="Receita" class="h-4 w-4 border-slate-600 text-teal-500 focus:ring-teal-600 bg-slate-900">
+                                <label for="categoria-type-receita" class="ml-2 block text-sm text-slate-300" data-translate="category_type_revenue">Receita</label>
+                            </div>
+                             <div class="flex items-center">
+                                <input id="categoria-type-despesa" name="categoria-type" type="radio" value="Despesa" checked class="h-4 w-4 border-slate-600 text-teal-500 focus:ring-teal-600 bg-slate-900">
+                                <label for="categoria-type-despesa" class="ml-2 block text-sm text-slate-300" data-translate="category_type_expense">Despesa</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> <span data-translate="button_add_category">Adicionar Categoria</span>
+                        </button>
+                    </form>
+                    <div class="max-h-80 overflow-y-auto pr-2">
+                        <ul id="categoria-list" class="space-y-2">
+                            <!-- Lista de categorias será injetada pelo JS -->
+                        </ul>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <button type="button" onclick="closeModal('modal-categoria')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_close">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Cash Entry -->
+        <div id="modal-cash-entry" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg m-4 modal-content">
+                <form id="form-cash-entry" class="p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-slate-100 flex items-center"><i class="fas fa-exchange-alt text-teal-400 mr-3"></i><span data-translate="cash_entry_modal_title">Novo Lançamento de Caixa</span></h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="cash-entry-description" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_description">Descrição *</label>
+                            <input type="text" id="cash-entry-description" required placeholder="Ex: Recebimento Venda Veículo X" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                         <div>
+                            <label for="cash-entry-reference" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_reference">Referência (BL/PO/DI)</label>
+                            <input type="text" id="cash-entry-reference" data-translate-placeholder="cash_entry_placeholder_reference" placeholder="Ex: PO-12345" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                         <div>
+                            <label for="cash-entry-categoria" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_category_expense">Categoria</span> *</label>
+                            <select id="cash-entry-categoria" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="cash-entry-type" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_type">Tipo *</label>
+                                <select id="cash-entry-type" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    <option value="Entrada" data-translate="cash_entry_type_inflow">Entrada</option>
+                                    <option value="Saída" data-translate="cash_entry_type_outflow">Saída</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="cash-entry-value" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_value">Valor (BRL) *</label>
+                                <input type="number" step="0.01" id="cash-entry-value" placeholder="25000,00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                         <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="cash-entry-estimated-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_estimated_date">Data Estimada *</label>
+                                <input type="date" id="cash-entry-estimated-date" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cash-entry-realized-date" class="block text-sm font-medium text-slate-400 mb-1" data-translate="cash_entry_label_realized_date">Data Realizada</label>
+                                <input type="date" id="cash-entry-realized-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end items-center gap-4">
+                        <button type="button" onclick="closeModal('modal-cash-entry')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_cancel">Cancelar</button>
+                        <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_save">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Orçamento -->
+        <div id="modal-orcamento" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl m-4 modal-content">
+                <form id="form-orcamento" class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-slate-100 flex items-center"><i class="fas fa-calculator text-teal-400 mr-3"></i><span data-translate="budget_modal_title">Definir Orçamento para</span> <span id="budget-modal-period-display" class="ml-2 text-teal-400"></span></h3>
+                        <button type="button" onclick="closeModal('modal-orcamento')" class="text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
+                    </div>
+                    <div id="orcamento-form-body" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                        <!-- Budget input fields will be injected here by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end items-center gap-4">
+                        <button type="button" onclick="closeModal('modal-orcamento')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_cancel">Cancelar</button>
+                        <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_save">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+        <!-- Modal Settings -->
+        <div id="modal-settings" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg m-4 modal-content">
+                <form id="form-settings" class="p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-slate-100 flex items-center"><i class="fas fa-cog text-teal-400 mr-3"></i><span data-translate="settings_modal_title">Configurações de Notificação</span></h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between bg-slate-900/50 p-4 rounded-lg">
+                            <label for="settings-notifications-enabled" class="font-medium text-slate-200" data-translate="settings_enable_email">Ativar notificações por e-mail</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="settings-notifications-enabled" class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-focus:ring-4 peer-focus:ring-teal-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label for="settings-lead-time" class="block text-sm font-medium text-slate-400 mb-1" data-translate="settings_notify_days">Notificar com antecedência de (dias)</label>
+                            <input type="number" id="settings-lead-time" min="1" value="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+    
+                        <div>
+                            <label for="settings-email" class="block text-sm font-medium text-slate-400 mb-1" data-translate="settings_email_for_notifications">E-mail para notificações</label>
+                            <input type="email" id="settings-email" data-translate-placeholder="settings_email_placeholder" placeholder="seu.email@exemplo.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                        </div>
+                    </div>
+    
+                    <div class="mt-8 flex justify-end items-center gap-4">
+                         <button type="button" onclick="closeModal('modal-settings')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_cancel">Cancelar</button>
+                        <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_save">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+         <!-- Modal Password Confirmation -->
+        <div id="modal-password-confirm" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-sm m-4 modal-content">
+                <form id="form-password-confirm" class="p-8">
+                    <h3 class="text-2xl font-bold mb-4 text-slate-100 flex items-center"><i class="fas fa-shield-alt text-yellow-400 mr-3"></i><span data-translate="password_modal_title">Confirmação Necessária</span></h3>
+                    <p class="text-slate-400 mb-6" data-translate="password_modal_text">Para continuar, por favor, insira a senha para confirmar esta ação.</p>
+                    <div>
+                        <label for="delete-password" class="block text-sm font-medium text-slate-400 mb-1" data-translate="password_modal_label">Senha</label>
+                        <input type="password" id="delete-password" data-translate-placeholder="password_modal_placeholder" placeholder="********" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none transition">
+                        <p id="password-error" class="text-red-500 text-sm mt-2 h-4"></p>
+                    </div>
+                    <div class="mt-8 flex justify-end items-center gap-4">
+                        <button type="button" onclick="closeModal('modal-password-confirm')" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-2 px-6 rounded-lg transition-colors" data-translate="button_cancel">Cancelar</button>
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors" data-translate="password_modal_confirm_action_button">Confirmar Ação</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-8 right-8 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+            <p id="toast-message"></p>
+        </div>
+    
+        <!-- AI Assistant FAB -->
+        <button id="ai-fab" class="fixed bottom-8 right-8 bg-teal-500 hover:bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-transform transform hover:scale-110 z-30">
+            <i class="fas fa-robot text-2xl"></i>
+        </button>
+    
+        <!-- AI Assistant Modal -->
+        <div id="ai-modal" class="modal-backdrop">
+            <div class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl m-4 flex flex-col modal-content">
+                <header class="p-4 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+                    <h3 class="text-xl font-bold text-slate-100 flex items-center">
+                        <i class="fas fa-robot text-teal-400 mr-3"></i><span data-translate="ai_modal_title">Assistente de CP</span>
+                    </h3>
+                    <button id="ai-modal-close" class="text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
+                </header>
+                <main id="ai-chat-area" class="flex-grow p-4 overflow-y-auto space-y-4">
+                    <!-- Initial Welcome Message -->
+                    <div class="flex items-start gap-3">
+                        <div class="bg-slate-700 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-teal-400"></i>
+                        </div>
+                        <div class="bg-slate-700 rounded-lg p-3 max-w-md">
+                            <p class="text-sm" id="ai-welcome-message" data-translate="ai_welcome_message">Olá! Sou seu assistente de Contas a Pagar. Faça uma pergunta sobre seus lançamentos. Por exemplo: "Qual o total a pagar para a Maersk Line?"</p>
+                        </div>
+                    </div>
+                </main>
+                <footer class="p-4 border-t border-slate-700 flex-shrink-0">
+                    <form id="ai-form" class="flex gap-2">
+                        <input type="text" id="ai-input" data-translate-placeholder="ai_input_placeholder" placeholder="Faça uma pergunta..." class="flex-grow bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" required>
+                        <button type="submit" id="ai-submit-button" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center w-28 transition-colors" disabled>
+                            <span id="ai-send-text" data-translate="button_send">Enviar</span>
+                            <i id="ai-loading-spinner" class="fas fa-spinner fa-spin hidden"></i>
+                        </button>
+                    </form>
+                </footer>
+            </div>
+        </div>
+    </div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

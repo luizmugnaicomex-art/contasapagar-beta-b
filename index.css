@@ -1,0 +1,137 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+/* Custom scrollbar for better aesthetics in dark mode */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1a202c;
+}
+::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+}
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 40;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    max-height: 90vh;
+}
+#ai-modal .modal-content {
+    overflow: hidden; /* Prevent parent from scrolling, child will scroll */
+}
+
+.tab-button.active {
+    border-bottom-color: #14b8a6; /* teal-500 */
+    color: #14b8a6;
+}
+.view-container {
+    display: none;
+}
+.view-container.active {
+    display: block;
+}
+details > summary {
+    list-style: none;
+}
+details > summary::-webkit-details-marker {
+    display: none;
+}
+details[open] summary .accordion-icon {
+    transform: rotate(90deg);
+}
+
+/* AI Assistant styles */
+#ai-fab .fa-robot {
+    transition: transform 0.3s ease-in-out;
+}
+#ai-fab:hover .fa-robot {
+    transform: rotate(15deg) scale(1.1);
+}
+
+#ai-chat-area {
+    scroll-behavior: smooth;
+}
+
+/* Dashboard card filter styles */
+.stat-card {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 2px solid transparent;
+}
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+.stat-card.active {
+    border-color: #14b8a6; /* teal-500 */
+    transform: translateY(-2px);
+}
+
+/* Settings Modal Toggle Switch */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Analytics Chart Styles */
+.chart-container {
+    position: relative;
+    height: 24rem; /* h-96 */
+}
+.chart-empty-state {
+    display: none; /* Hidden by default */
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Language Switcher */
+#lang-switcher-button img, #lang-switcher-dropdown img {
+    width: 24px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+/* Password error message */
+#password-error.visible {
+    opacity: 1;
+}
+
+/* Login & App Container Visibility */
+#app-container.hidden {
+    display: none;
+}
+
+/* Admin-only elements */
+.admin-only {
+    display: none;
+}
+body.is-admin .admin-only {
+    display: inline-block;
+}
