@@ -38,7 +38,6 @@ type CategoriaType = 'Receita' | 'Despesa';
 interface Fornecedor {
     id: string;
     name: string;
-    userId: string;
 }
 
 interface Categoria {
@@ -46,7 +45,6 @@ interface Categoria {
     group: string;
     name: string;
     type: CategoriaType;
-    userId: string;
 }
 
 interface Orcamento {
@@ -55,7 +53,6 @@ interface Orcamento {
     month: number; // 1-12
     categoriaId: string;
     amount: number;
-    userId: string;
 }
 
 interface ContaPagar {
@@ -95,7 +92,6 @@ interface ContaPagar {
     isAdiantamento?: boolean;
     reconciled?: boolean;
     approvalStatus: ApprovalStatus;
-    userId: string;
     createdAt: any; // Firestore Timestamp
 }
 
@@ -103,7 +99,6 @@ interface NotificationSettings {
     enabled: boolean;
     leadTimeDays: number;
     email: string;
-    userId?: string;
     language?: Language;
 }
 
@@ -117,12 +112,10 @@ interface CashEntry {
     categoriaId?: string;
     relatedCpId?: string;
     reference?: string;
-    userId: string;
 }
 
 interface FupData {
     id: string;
-    userId: string;
     [key: string]: any;
 }
 
@@ -141,6 +134,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+// --- Admin UIDs ---
+const ADMIN_UIDS = ['g8P9gZqOn7NGVZLSx1TszRZqsse2', 'X456dNxA3hSlq9LGicR7iTPUP3t2'];
 
 // --- Translation ---
 const translations = {
@@ -452,7 +448,7 @@ function listenToData() {
     };
 
     for (const [stateKey, collectionName] of Object.entries(collectionsToListen)) {
-        const q = db.collection(collectionName).where("userId", "==", userId);
+        const q = db.collection('users').doc(userId).collection(collectionName);
         const unsubscribe = q.onSnapshot((snapshot: any) => {
             const data = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
             (state as any)[stateKey] = data;
@@ -463,16 +459,18 @@ function listenToData() {
             
             // This is the main render loop trigger
             updateUI();
+        }, (error: Error) => {
+            console.error(`Error in snapshot listener for ${collectionName}:`, error.message);
         });
         state.unsubscribeListeners.push(unsubscribe);
     }
     
     // Settings are handled as a single document for the user for simplicity
-    const settingsQuery = db.collection('settings').where("userId", "==", userId).limit(1);
-    const unsubSettings = settingsQuery.onSnapshot(async (snapshot: any) => {
-        if (!snapshot.empty) {
-            const settingsData = snapshot.docs[0].data();
-            state.notificationSettings = { ...settingsData, id: snapshot.docs[0].id };
+    const settingsDocRef = db.collection('settings').doc(userId);
+    const unsubSettings = settingsDocRef.onSnapshot(async (doc: any) => {
+        if (doc.exists) {
+            const settingsData = doc.data();
+            state.notificationSettings = { ...state.notificationSettings, ...settingsData };
             // Set language from settings if available
             if (settingsData.language && translations[settingsData.language]) {
                 state.currentLanguage = settingsData.language;
@@ -481,21 +479,22 @@ function listenToData() {
         } else {
             // Create default settings for a new user
             const defaultSettings = { 
-                userId, 
                 enabled: false, 
                 leadTimeDays: 3, 
                 email: state.currentUser.email || '',
                 language: 'pt-BR'
             };
-            await db.collection('settings').add(defaultSettings);
+            await settingsDocRef.set(defaultSettings);
         }
+    }, (error: Error) => {
+        console.error('Error in settings snapshot listener:', error.message);
     });
     state.unsubscribeListeners.push(unsubSettings);
 }
 
 
 // Seeding initial data for categories for a better first-time experience
-const initialCategorias: Omit<Categoria, 'id' | 'userId'>[] = [
+const initialCategorias: Omit<Categoria, 'id'>[] = [
     { group: 'Custos Internacionais', name: 'Freight', type: 'Despesa' },
     { group: 'Custos Internacionais', name: 'Insurance', type: 'Despesa' },
     { group: 'Impostos Governamentais', name: 'II', type: 'Despesa' },
@@ -551,9 +550,10 @@ async function seedInitialData() {
     const userId = state.currentUser.uid;
     const batch = db.batch();
     
+    const userCategoriesCollection = db.collection('users').doc(userId).collection('categorias');
     initialCategorias.forEach(cat => {
-        const newCatRef = db.collection('categorias').doc();
-        batch.set(newCatRef, { ...cat, userId });
+        const newCatRef = userCategoriesCollection.doc();
+        batch.set(newCatRef, { ...cat });
     });
     
     await batch.commit();
@@ -573,9 +573,9 @@ function renderFupDatabaseView(filter?: string) {
 
     const filteredData = state.fupDatabase.filter(row => {
         if (!lowerCaseFilter) return true;
-        // Search across all values in the row object, skipping id and userId
+        // Search across all values in the row object, skipping id
         return Object.entries(row).some(([key, value]) => {
-            if (key === 'id' || key === 'userId') return false;
+            if (key === 'id') return false;
             return String(value).toLowerCase().includes(lowerCaseFilter);
         });
     });
@@ -638,18 +638,19 @@ async function handleFupUpload(e: Event) {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet);
 
+            const fupCollection = db.collection('users').doc(userId).collection('fupDatabase');
+
             // Delete existing data for the user
-            const deleteQuery = db.collection('fupDatabase').where('userId', '==', userId);
-            const docsToDelete = await deleteQuery.get();
+            const docsToDelete = await fupCollection.get();
             const deleteBatch = db.batch();
-            docsToDelete.forEach(doc => deleteBatch.delete(doc.ref));
+            docsToDelete.forEach((doc: any) => deleteBatch.delete(doc.ref));
             await deleteBatch.commit();
             
             // Add new data
             const addBatch = db.batch();
             jsonData.forEach(row => {
-                const newRowRef = db.collection('fupDatabase').doc();
-                addBatch.set(newRowRef, { ...row, userId });
+                const newRowRef = fupCollection.doc();
+                addBatch.set(newRowRef, { ...row });
             });
             await addBatch.commit();
 
@@ -687,27 +688,37 @@ function renderApp() {
     document.getElementById('user-info')!.classList.remove('hidden');
     document.getElementById('user-info')!.classList.add('flex');
     
-    const ADMIN_EMAILS = ['admin@byd.com', 'caio@byd.com'];
-    if (ADMIN_EMAILS.includes(state.currentUser.email)) {
+    if (ADMIN_UIDS.includes(state.currentUser.uid)) {
         document.body.classList.add('is-admin');
     } else {
         document.body.classList.remove('is-admin');
     }
 
-    populateDropdowns();
+    // Dropdowns and other UI elements are now populated by the main updateUI function
     updateUI();
 }
 
 function updateUI() {
     if (!state.currentUser) return; // Don't render if logged out
+    
+    // Populate dynamic elements like dropdowns first
+    populateDropdowns();
+
+    // Render main dashboard components
     renderDashboardStats();
     renderCpTable();
+
+    // Render lists for modals
+    renderFornecedorList();
+    renderCategoriaList();
+    
+    // Render all views (visibility is controlled by CSS)
     renderAnaliseView();
     renderBlView();
     renderPoView();
     renderDiView();
     renderFupReportView();
-    renderFupDatabaseView();
+    renderFupDatabaseView((document.getElementById('fup-database-search') as HTMLInputElement).value);
     renderConciliacaoView();
     renderFluxoCaixaView();
     renderBudgetControlView();
@@ -724,8 +735,11 @@ function populateDropdown(selectId: string, items: any[], placeholderKey: Transl
     const select = document.getElementById(selectId) as HTMLSelectElement;
     if (!select) return;
 
+    // Preserve the current value to avoid resetting the user's selection unnecessarily
+    const currentValue = select.value;
+
     const placeholderText = translate(placeholderKey);
-    select.innerHTML = `<option value="" disabled selected>${placeholderText}</option>`;
+    select.innerHTML = `<option value="" disabled>${placeholderText}</option>`;
 
     if (groupBy) {
         const grouped = items.reduce((acc, item) => {
@@ -753,6 +767,14 @@ function populateDropdown(selectId: string, items: any[], placeholderKey: Transl
             option.textContent = item.name;
             select.appendChild(option);
         });
+    }
+
+    // Restore the previously selected value if it still exists in the new list
+    if (Array.from(select.options).some(opt => opt.value === currentValue)) {
+        select.value = currentValue;
+    } else {
+        // If the old value is gone, select the placeholder
+        select.value = "";
     }
 }
 
@@ -848,8 +870,7 @@ function renderCpTable() {
                     approvalText = translate('approval_status_pending');
             }
             
-            const ADMIN_EMAILS = ['admin@byd.com', 'caio@byd.com'];
-            const canAdmin = state.currentUser && ADMIN_EMAILS.includes(state.currentUser.email);
+            const canAdmin = state.currentUser && ADMIN_UIDS.includes(state.currentUser.uid);
             
             return `
                 <tr class="hover:bg-slate-700/50 transition-colors">
@@ -1153,16 +1174,15 @@ async function setCurrentLanguage(lang: Language, saveToDb = true) {
     currentLangText.textContent = lang.toUpperCase();
 
     translateUI(lang);
-    populateDropdowns(); // Re-populate dropdowns with translated placeholders
+    
+    // Manually repopulate dropdowns after language change
+    populateDropdowns(); 
     updateUI();
     
     // Save preference to user's settings document
     if (saveToDb && state.currentUser) {
-        const settingsQuery = await db.collection('settings').where('userId', '==', state.currentUser.uid).limit(1).get();
-        if (!settingsQuery.empty) {
-            const settingsDocRef = settingsQuery.docs[0].ref;
-            await settingsDocRef.update({ language: lang });
-        }
+        const settingsDocRef = db.collection('settings').doc(state.currentUser.uid);
+        await settingsDocRef.set({ language: lang }, { merge: true });
     }
 }
 
@@ -1312,12 +1332,14 @@ async function saveFornecedor(e: Event) {
     const id = idInput.value;
     const name = nameInput.value.trim();
     if (!name) return;
+    const fornecedoresCollection = db.collection('users').doc(userId).collection('fornecedores');
+    const data = { name };
 
     if (id) {
-        await db.collection('fornecedores').doc(id).update({ name });
+        await fornecedoresCollection.doc(id).update(data);
         showToast('toast_supplier_updated');
     } else {
-        await db.collection('fornecedores').add({ name, userId });
+        await fornecedoresCollection.add(data);
         showToast('toast_supplier_added');
     }
     
@@ -1340,13 +1362,14 @@ async function saveCategoria(e: Event) {
     const name = nameInput.value.trim();
     if (!name || !group) return;
 
-    const data = { group, name, type, userId };
+    const data = { group, name, type };
+    const categoriasCollection = db.collection('users').doc(userId).collection('categorias');
 
     if (id) {
-        await db.collection('categorias').doc(id).update(data);
+        await categoriasCollection.doc(id).update(data);
         showToast('toast_category_updated');
     } else {
-        await db.collection('categorias').add(data);
+        await categoriasCollection.add(data);
         showToast('toast_category_added');
     }
 
@@ -1402,20 +1425,21 @@ async function saveCp(e: Event) {
         isAdiantamento: (document.getElementById('cp-is-adiantamento') as HTMLInputElement).checked,
     };
 
+    const cpCollection = db.collection('users').doc(userId).collection('contasPagar');
+
     if (id) {
-        await db.collection('contasPagar').doc(id).update(cpData);
+        await cpCollection.doc(id).update(cpData);
         showToast('toast_entry_updated');
     } else {
         const nextCpNumber = `CP${(state.contasPagar.length + 1).toString().padStart(5, '0')}`;
         const newCp = {
             ...cpData,
-            userId,
             cpNumber: nextCpNumber,
             approvalStatus: 'Pendente' as ApprovalStatus,
             reconciled: cpData.isAdiantamento ? false : undefined,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
-        await db.collection('contasPagar').add(newCp);
+        await cpCollection.add(newCp);
         showToast('toast_entry_saved');
     }
     
@@ -1425,17 +1449,15 @@ async function saveCp(e: Event) {
 async function saveSettings(e: Event) {
     e.preventDefault();
     if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
     const settingsData = {
         enabled: (document.getElementById('settings-notifications-enabled') as HTMLInputElement).checked,
         leadTimeDays: parseInt((document.getElementById('settings-lead-time') as HTMLInputElement).value, 10),
         email: (document.getElementById('settings-email') as HTMLInputElement).value.trim(),
     };
     
-    const settingsQuery = await db.collection('settings').where('userId', '==', state.currentUser.uid).limit(1).get();
-    if (!settingsQuery.empty) {
-        const settingsDocRef = settingsQuery.docs[0].ref;
-        await settingsDocRef.update(settingsData);
-    }
+    const settingsDocRef = db.collection('settings').doc(userId);
+    await settingsDocRef.set(settingsData, { merge: true });
     
     showToast('toast_settings_saved');
     closeModal('modal-settings');
@@ -1469,7 +1491,9 @@ function renderFornecedorList() {
 }
 
 async function deleteFornecedor(id: string) {
-    await db.collection('fornecedores').doc(id).delete();
+    if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
+    await db.collection('users').doc(userId).collection('fornecedores').doc(id).delete();
     showToast('toast_supplier_deleted', 'error');
     // UI will update via onSnapshot
 }
@@ -1511,7 +1535,9 @@ function renderCategoriaList() {
 
 
 async function deleteCategoria(id: string) {
-    await db.collection('categorias').doc(id).delete();
+    if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
+    await db.collection('users').doc(userId).collection('categorias').doc(id).delete();
     showToast('toast_category_deleted', 'error');
     // UI will update via onSnapshot
 }
@@ -1580,28 +1606,36 @@ function editCp(id: string) {
 }
 
 async function toggleCpStatus(id: string) {
+    if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
     const paymentDate = new Date().toISOString().split('T')[0];
-    await db.collection('contasPagar').doc(id).update({ status: 'Pago', paymentDate });
+    await db.collection('users').doc(userId).collection('contasPagar').doc(id).update({ status: 'Pago', paymentDate });
     showToast('toast_entry_paid');
     // UI will update via onSnapshot
 }
 
 async function deleteCp(id: string) {
     await confirmAction(async () => {
-        await db.collection('contasPagar').doc(id).delete();
+        if (!state.currentUser) return;
+        const userId = state.currentUser.uid;
+        await db.collection('users').doc(userId).collection('contasPagar').doc(id).delete();
         showToast('toast_entry_deleted', 'error');
         // UI will update via onSnapshot
     });
 }
 
 async function approveCp(id: string) {
-    await db.collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
+    if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
+    await db.collection('users').doc(userId).collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
     showToast('toast_entry_approved');
     // UI will update via onSnapshot
 }
 
 async function rejectCp(id: string) {
-    await db.collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
+    if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
+    await db.collection('users').doc(userId).collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
     showToast('toast_entry_rejected', 'error');
     // UI will update via onSnapshot
 }
@@ -1648,6 +1682,7 @@ async function confirmAction(callback: () => Promise<void>) {
 async function saveCashEntry(e: Event) {
     e.preventDefault();
     if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
     
     const data = {
         description: (document.getElementById('cash-entry-description') as HTMLInputElement).value,
@@ -1657,10 +1692,9 @@ async function saveCashEntry(e: Event) {
         value: parseFloat((document.getElementById('cash-entry-value') as HTMLInputElement).value),
         estimatedDate: (document.getElementById('cash-entry-estimated-date') as HTMLInputElement).value,
         realizedDate: (document.getElementById('cash-entry-realized-date') as HTMLInputElement).value || null,
-        userId: state.currentUser.uid,
     };
 
-    await db.collection('cashEntries').add(data);
+    await db.collection('users').doc(userId).collection('cashEntries').add(data);
     showToast('toast_cash_entry_saved');
     closeModal('modal-cash-entry');
 }
@@ -1668,6 +1702,7 @@ async function saveCashEntry(e: Event) {
 async function saveOrcamento(e: Event) {
     e.preventDefault();
     if (!state.currentUser) return;
+    const userId = state.currentUser.uid;
 
     const month = parseInt((document.getElementById('budget-month-select') as HTMLSelectElement).value);
     const year = parseInt((document.getElementById('budget-year-select') as HTMLSelectElement).value);
@@ -1675,6 +1710,7 @@ async function saveOrcamento(e: Event) {
     const batch = db.batch();
     const formBody = document.getElementById('orcamento-form-body') as HTMLElement;
     const inputs = formBody.querySelectorAll('input[data-category-id]');
+    const orcamentoCollection = db.collection('users').doc(userId).collection('orcamentos');
 
     for (const input of Array.from(inputs)) {
         const el = input as HTMLInputElement;
@@ -1684,17 +1720,16 @@ async function saveOrcamento(e: Event) {
 
         if (orcamentoId && orcamentoId !== 'new') {
             // Update existing budget
-            const docRef = db.collection('orcamentos').doc(orcamentoId);
+            const docRef = orcamentoCollection.doc(orcamentoId);
             batch.update(docRef, { amount });
         } else if (amount > 0) {
             // Create new budget
-            const docRef = db.collection('orcamentos').doc();
+            const docRef = orcamentoCollection.doc();
             batch.set(docRef, {
-                userId: state.currentUser.uid,
                 categoriaId,
                 month,
                 year,
-                amount
+                amount,
             });
         }
     }
