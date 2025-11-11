@@ -379,12 +379,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-slate-800 rounded-xl shadow-lg p-6 xl:col-span-2">
+                            <div class="bg-slate-800 rounded-xl shadow-lg p-6">
                                  <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="analysis_chart_title_monthly_payments">Pagamentos Mensais (Últimos 12 Meses)</h2>
                                 <div class="relative h-96 chart-container">
                                     <canvas id="monthly-payments-column-chart"></canvas>
                                      <div id="monthly-chart-empty-state" class="chart-empty-state">
                                         <i class="fas fa-chart-column text-4xl text-slate-500 mb-4"></i>
+                                        <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800 rounded-xl shadow-lg p-6">
+                                 <h2 class="text-lg font-bold text-slate-100 mb-4" data-translate="analysis_chart_title_monthly_extra_costs">Custos Extras Mensais (Últimos 12 Meses)</h2>
+                                <div class="relative h-96 chart-container">
+                                    <canvas id="extra-costs-monthly-chart"></canvas>
+                                     <div id="extra-costs-chart-empty-state" class="chart-empty-state">
+                                        <i class="fas fa-dollar-sign text-4xl text-slate-500 mb-4"></i>
                                         <p class="text-slate-500" data-translate="chart_empty_state">Nenhum dado para exibir.</p>
                                     </div>
                                 </div>
