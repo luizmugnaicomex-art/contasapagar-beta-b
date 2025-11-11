@@ -142,6 +142,8 @@ const db = firebase.firestore();
 
 // --- Admin UIDs ---
 const ADMIN_UIDS = ['g8P9gZqOn7NGVZLSx1TszRZqsse2', 'X456dNxA3hSlq9LGicR7iTPUP3t2'];
+const SHARED_DATA_OWNER_UID = 'g8P9gZqOn7NGVZLSx1TszRZqsse2'; // All users will read/write from this user's data space.
+
 
 // --- Translation ---
 const translations = {
@@ -479,7 +481,7 @@ function listenToData() {
     };
 
     for (const [stateKey, collectionName] of Object.entries(collectionsToListen)) {
-        const q = db.collection('users').doc(userId).collection(collectionName);
+        const q = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection(collectionName);
         const unsubscribe = q.onSnapshot((snapshot: any) => {
             const data = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
             (state as any)[stateKey] = data;
@@ -578,10 +580,9 @@ const initialCategorias: Omit<Categoria, 'id'>[] = [
 
 async function seedInitialData() {
     if (!state.currentUser) return;
-    const userId = state.currentUser.uid;
     const batch = db.batch();
     
-    const userCategoriesCollection = db.collection('users').doc(userId).collection('categorias');
+    const userCategoriesCollection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias');
     initialCategorias.forEach(cat => {
         const newCatRef = userCategoriesCollection.doc();
         batch.set(newCatRef, { ...cat });
@@ -847,7 +848,6 @@ function populateYearSelector(id: string) { console.warn('populateYearSelector n
 
 async function handleFupUpload(e: Event) {
     if (!state.currentUser) return;
-    const userId = state.currentUser.uid;
     const input = e.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     
@@ -862,7 +862,7 @@ async function handleFupUpload(e: Event) {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet);
 
-            const fupCollection = db.collection('users').doc(userId).collection('fupDatabase');
+            const fupCollection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fupDatabase');
 
             // Delete existing data for the user
             const docsToDelete = await fupCollection.get();
@@ -2018,7 +2018,6 @@ function toggleStatFilter(statId: string) {
 async function saveCp(e: Event) {
     e.preventDefault();
     if (!state.currentUser) return;
-    const userId = state.currentUser.uid;
     const id = (document.getElementById('cp-id') as HTMLInputElement).value;
 
     const valorOriginalStr = (document.getElementById('cp-valor-original') as HTMLInputElement).value.replace('.', '').replace(',', '.');
@@ -2084,7 +2083,7 @@ async function saveCp(e: Event) {
 
 
     try {
-        const collectionRef = db.collection('users').doc(userId).collection('contasPagar');
+        const collectionRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar');
         if (id) {
             // Update existing
             const docRef = collectionRef.doc(id);
@@ -2092,7 +2091,7 @@ async function saveCp(e: Event) {
             showToast('toast_entry_updated');
         } else {
             // Create new
-            const countRef = db.collection('users').doc(userId).collection('counters').doc('contasPagar');
+            const countRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('counters').doc('contasPagar');
             const newCpNumber = await db.runTransaction(async (transaction: any) => {
                 const doc = await transaction.get(countRef);
                 const newCount = (doc.data()?.count || 0) + 1;
@@ -2120,7 +2119,7 @@ async function saveFornecedor(e: Event) {
     const form = e.target as HTMLFormElement;
     const id = (document.getElementById('fornecedor-id') as HTMLInputElement).value;
     const name = (document.getElementById('fornecedor-nome') as HTMLInputElement).value;
-    const collection = db.collection('users').doc(state.currentUser.uid).collection('fornecedores');
+    const collection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores');
     try {
         if(id) {
             await collection.doc(id).update({ name });
@@ -2142,7 +2141,7 @@ async function saveCategoria(e: Event) {
     const name = (document.getElementById('categoria-nome') as HTMLInputElement).value;
     const group = (document.getElementById('categoria-grupo') as HTMLInputElement).value;
     const type = (document.querySelector('input[name="categoria-type"]:checked') as HTMLInputElement).value as CategoriaType;
-    const collection = db.collection('users').doc(state.currentUser.uid).collection('categorias');
+    const collection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias');
     try {
         if(id) {
             await collection.doc(id).update({ name, group, type });
@@ -2202,7 +2201,7 @@ function editFornecedor(id: string) {
 
 function deleteFornecedor(id: string) {
     if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
-        db.collection('users').doc(state.currentUser.uid).collection('fornecedores').doc(id).delete()
+        db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores').doc(id).delete()
             .then(() => showToast('toast_supplier_deleted'))
             .catch((e: Error) => console.error("Error deleting supplier: ", e));
     }
@@ -2220,7 +2219,7 @@ function editCategoria(id: string) {
 
 function deleteCategoria(id: string) {
      if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-        db.collection('users').doc(state.currentUser.uid).collection('categorias').doc(id).delete()
+        db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias').doc(id).delete()
             .then(() => showToast('toast_category_deleted'))
             .catch((e: Error) => console.error("Error deleting category: ", e));
     }
@@ -2278,7 +2277,7 @@ async function editCp(id: string) {
 
 async function toggleCpStatus(id: string) {
     if (!state.currentUser) return;
-    const docRef = db.collection('users').doc(state.currentUser.uid).collection('contasPagar').doc(id);
+    const docRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id);
     const today = new Date().toISOString().split('T')[0];
     await docRef.update({ status: 'Pago', paymentDate: today });
     showToast('toast_entry_paid');
@@ -2287,7 +2286,7 @@ async function toggleCpStatus(id: string) {
 async function deleteCp(id: string) {
     const isConfirmed = confirm('Tem certeza que deseja excluir este lançamento? Esta ação não pode ser desfeita.');
     if (isConfirmed && state.currentUser) {
-        await db.collection('users').doc(state.currentUser.uid).collection('contasPagar').doc(id).delete();
+        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).delete();
         showToast('toast_entry_deleted');
     }
 }
@@ -2297,7 +2296,7 @@ async function approveCp(id: string) {
         showToast('toast_action_not_allowed', 'error');
         return;
     }
-    await db.collection('users').doc(state.currentUser.uid).collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
+    await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
     showToast('toast_entry_approved');
 }
 
@@ -2307,7 +2306,7 @@ async function rejectCp(id: string) {
         showToast('toast_action_not_allowed', 'error');
         return;
     }
-    await db.collection('users').doc(state.currentUser.uid).collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
+    await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
     showToast('toast_entry_rejected');
 }
 
