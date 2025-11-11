@@ -842,9 +842,6 @@ function renderFupDatabaseView(filter?: string) {
 function renderConciliacaoView() { console.warn('renderConciliacaoView not implemented.'); }
 function renderFluxoCaixaView() { console.warn('renderFluxoCaixaView not implemented.'); }
 function renderBudgetControlView() { console.warn('renderBudgetControlView not implemented.'); }
-function renderCategoryPieChart(data: any) { console.warn('renderCategoryPieChart not implemented.'); }
-function renderTopSuppliersBarChart(data: any) { console.warn('renderTopSuppliersBarChart not implemented.'); }
-function renderMonthlyPaymentsColumnChart() { console.warn('renderMonthlyPaymentsColumnChart not implemented.'); }
 function populateMonthSelector(id: string, lang: Language) { console.warn('populateMonthSelector not implemented.'); }
 function populateYearSelector(id: string) { console.warn('populateYearSelector not implemented.'); }
 
@@ -1458,6 +1455,299 @@ function renderAnaliseView() {
     renderMonthlyPaymentsColumnChart();
 }
 
+function renderCategoryPieChart(data: ContaPagar[]) {
+    const canvas = document.getElementById('category-pie-chart') as HTMLCanvasElement;
+    const emptyState = document.getElementById('category-chart-empty-state')!;
+    if (!canvas) return;
+
+    if (categoryPieChart) {
+        categoryPieChart.destroy();
+    }
+
+    const expenses = data.filter(cp => {
+        const categoria = state.categorias.find(c => c.id === cp.categoriaId);
+        return categoria?.type === 'Despesa';
+    });
+
+    if (expenses.length === 0) {
+        canvas.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+    
+    canvas.style.display = 'block';
+    emptyState.style.display = 'none';
+
+    const byCategory = expenses.reduce((acc, cp) => {
+        const catName = state.categorias.find(c => c.id === cp.categoriaId)?.name || 'Unknown';
+        acc[catName] = (acc[catName] || 0) + cp.valor;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const labels = Object.keys(byCategory);
+    const values = Object.values(byCategory);
+    
+    const colors = [
+        '#2dd4bf', '#38bdf8', '#818cf8', '#e879f9', '#f472b6', 
+        '#fb7185', '#fb923c', '#facc15', '#a3e635', '#4ade80'
+    ];
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    categoryPieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: translate('chart_label_total_value_paid'),
+                data: values,
+                backgroundColor: colors,
+                borderColor: '#1e293b', // slate-800
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#94a3b8' // text-slate-400
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += formatCurrency(context.parsed);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderTopSuppliersBarChart(data: ContaPagar[]) {
+    const canvas = document.getElementById('top-suppliers-bar-chart') as HTMLCanvasElement;
+    const emptyState = document.getElementById('suppliers-chart-empty-state')!;
+    if (!canvas) return;
+
+    if (topSuppliersBarChart) {
+        topSuppliersBarChart.destroy();
+    }
+
+    if (data.length === 0) {
+        canvas.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+    canvas.style.display = 'block';
+    emptyState.style.display = 'none';
+
+    const bySupplier = data.reduce((acc, cp) => {
+        const supplierName = state.fornecedores.find(f => f.id === cp.fornecedorId)?.name || 'Unknown';
+        acc[supplierName] = (acc[supplierName] || 0) + cp.valor;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const sortedSuppliers = Object.entries(bySupplier)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5);
+        
+    if (sortedSuppliers.length === 0) {
+        canvas.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+
+    const labels = sortedSuppliers.map(([name]) => name);
+    const values = sortedSuppliers.map(([, total]) => total);
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    topSuppliersBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: translate('chart_label_total_value_paid'),
+                data: values,
+                backgroundColor: 'rgba(20, 184, 166, 0.6)', // teal-500 with opacity
+                borderColor: 'rgba(20, 184, 166, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Horizontal bar chart
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { 
+                        color: '#94a3b8',
+                        callback: (value) => {
+                           if (typeof value === 'number') {
+                                return formatCurrency(value, 'BRL', state.currentLanguage).replace(/\s*R\$\s*/, '');
+                            }
+                            return value;
+                        }
+                    } 
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#94a3b8' } 
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.x !== null) {
+                                label += formatCurrency(context.parsed.x);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderMonthlyPaymentsColumnChart() {
+    const canvas = document.getElementById('monthly-payments-column-chart') as HTMLCanvasElement;
+    const emptyState = document.getElementById('monthly-chart-empty-state')!;
+    if (!canvas) return;
+
+    if (monthlyPaymentsColumnChart) {
+        monthlyPaymentsColumnChart.destroy();
+    }
+    
+    const allData = state.contasPagar; // Use all data for historical view
+
+    if (allData.length === 0) {
+        canvas.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+    canvas.style.display = 'block';
+    emptyState.style.display = 'none';
+
+    const labels: string[] = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        labels.push(d.toLocaleDateString(state.currentLanguage, { month: 'short', year: '2-digit' }));
+    }
+
+    const paidData = Array(12).fill(0);
+    const pendingData = Array(12).fill(0);
+
+    allData.forEach(cp => {
+        if (!cp.vencimento) return;
+        const dueDate = new Date(cp.vencimento + 'T00:00:00');
+        const monthDiff = (now.getFullYear() - dueDate.getFullYear()) * 12 + (now.getMonth() - dueDate.getMonth());
+
+        if (monthDiff >= 0 && monthDiff < 12) {
+            const index = 11 - monthDiff;
+            if (cp.status === 'Pago') {
+                paidData[index] += cp.valor;
+            } else {
+                pendingData[index] += cp.valor;
+            }
+        }
+    });
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    monthlyPaymentsColumnChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: translate('chart_legend_paid'),
+                    data: paidData,
+                    backgroundColor: 'rgba(34, 197, 94, 0.6)', // green-500 with opacity
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: translate('chart_legend_pending'),
+                    data: pendingData,
+                    backgroundColor: 'rgba(234, 179, 8, 0.6)', // yellow-500 with opacity
+                    borderColor: 'rgba(234, 179, 8, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { 
+                        color: '#94a3b8',
+                        callback: (value) => {
+                            if (typeof value === 'number') {
+                                 // Format compactly for y-axis
+                                if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                if (value >= 1000) return (value / 1000).toFixed(1) + 'k';
+                                return value;
+                            }
+                            return value;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { color: '#94a3b8' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.y !== null) {
+                                label += formatCurrency(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 // --- App Navigation ---
 function setActiveView(viewName: string) {
     // Handle views
@@ -1507,6 +1797,8 @@ async function logout() {
 // --- Main Application Logic ---
 
 document.addEventListener('DOMContentLoaded', async () => {
+    Chart.defaults.color = '#94a3b8'; // text-slate-400
+    Chart.defaults.font.family = "'Inter', sans-serif";
     
     auth.onAuthStateChanged(async (user) => {
         const loginForm = document.getElementById('login-form');
