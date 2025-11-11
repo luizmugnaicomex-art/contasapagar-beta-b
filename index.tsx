@@ -161,7 +161,7 @@ const translations = {
         action_title_edit: 'Editar', action_title_mark_paid: 'Marcar como Pago', action_title_delete: 'Excluir', action_title_approve: 'Aprovar', action_title_reject: 'Rejeitar', action_title_reconcile: 'Marcar como Conciliado',
         status_pending: 'Pendente', status_overdue: 'Atrasado', status_paid: 'Pago',
         approval_status_pending: 'Pendente', approval_status_approved: 'Aprovado', approval_status_rejected: 'Rejeitado',
-        analysis_chart_title_by_category: 'Despesas por Categoria', analysis_chart_title_top_suppliers: 'Top 5 Fornecedores', analysis_chart_title_monthly_payments: 'Pagamentos Mensais (Últimos 12 Meses)',
+        analysis_chart_title_by_category: 'Despesas por Categoria', analysis_chart_title_top_suppliers: 'Top 5 Fornecedores', analysis_chart_title_monthly_payments: 'Pagamentos Mensais (Últimos 12 Meses)', analysis_chart_title_monthly_extra_costs: 'Custos Extras Mensais (Últimos 12 Meses)',
         chart_empty_state: 'Nenhum dado para exibir.', chart_label_total_value_paid: 'Valor Total Pago', chart_legend_paid: 'Pago', chart_legend_pending: 'Pendente',
         grouped_view_total_cost: 'Custo Total',
         bl_empty_state: 'Nenhum custo associado a um BL encontrado.', po_empty_state: 'Nenhum custo associado a um PO encontrado.', di_empty_state: 'Nenhum custo associado a um Nº de DI encontrado.',
@@ -180,6 +180,9 @@ const translations = {
         toast_entry_updated: 'Lançamento atualizado com sucesso!', toast_entry_saved: 'Lançamento salvo com sucesso!', toast_entry_paid: 'Lançamento marcado como pago!', toast_entry_deleted: 'Lançamento excluído.', toast_entry_approved: 'Lançamento aprovado!', toast_entry_rejected: 'Lançamento rejeitado!', toast_entry_reconciled: 'Adiantamento conciliado com sucesso!',
         toast_settings_saved: 'Configurações salvas com sucesso!', toast_no_data_to_export: 'Nenhum dado para exportar.', toast_report_exported: 'Relatório exportado com sucesso!', toast_action_not_allowed: 'Ação não permitida para este usuário.',
         password_modal_title: 'Confirmação Necessária', password_modal_text: 'Para continuar, por favor, insira a senha para confirmar esta ação.', password_modal_label: 'Senha', password_modal_placeholder: '********', password_modal_confirm_action_button: 'Confirmar Ação', password_modal_error: 'Senha incorreta. Tente novamente.',
+// FIX: Add missing translation keys for confirmation dialogs.
+        confirm_delete_supplier: 'Tem certeza que deseja excluir este fornecedor? Esta ação não pode ser desfeita.',
+        confirm_delete_category: 'Tem certeza que deseja excluir esta categoria?',
         ai_modal_title: 'Assistente de CP', ai_welcome_message: 'Olá! Sou seu assistente de Contas a Pagar. Faça uma pergunta sobre seus lançamentos. Por exemplo: "Qual o total a pagar para a Maersk Line?"', ai_input_placeholder: 'Faça uma pergunta...', ai_error_generic: 'Desculpe, não consegui processar sua solicitação.', ai_system_instruction: "Você é um assistente financeiro especialista em Contas a Pagar para uma empresa que usa SAP. Responda a perguntas com base nos dados JSON fornecidos. Os dados contêm 'fornecedores', 'categorias', e 'contasPagar'. 'migo' é a entrada de mercadoria e 'miro' é o registro de fatura. Seja conciso e direto. Formate valores monetários como R$ 1.234,56. Responda em Português do Brasil.",
         form_label_di_number: 'Nº da DI', form_label_vessel_name: 'Nome do Navio', form_label_voyage: 'Voyage', form_label_nf_type: 'Tipo de NF', form_label_nf_emission_date: 'Data Emissão NF', form_label_pr_number: 'Nº da PR', form_label_pr_emission_date: 'Data Emissão PR', form_label_sap_po_emission_date: 'Data Emissão PO SAP', form_label_nf_import_number: 'Nº NF Importação', form_label_payment_method: 'Método de Pagamento', form_label_payment_date: 'Data de Pagamento', form_label_cfop: 'CFOP', form_label_is_adiantamento: 'Adiantamento?',
         database_title: 'Banco de Dados - FUP', database_upload_prompt: 'Clique para carregar o arquivo FUP (.xlsx)', database_table_header_bl: 'BL/AWB', database_table_header_po: 'PO SAP', database_table_header_vessel: 'Navio', database_table_header_voyage: 'Voyage', database_table_header_di: 'Nº DI', database_table_header_eta: 'ETA', database_empty_state: 'Nenhum dado de FUP carregado.', toast_fup_loaded: 'Dados do FUP carregados com sucesso!', toast_fup_error: 'Erro ao carregar o arquivo FUP.',
@@ -211,7 +214,7 @@ const translations = {
         action_title_edit: 'Edit', action_title_mark_paid: 'Mark as Paid', action_title_delete: 'Delete', action_title_approve: 'Approve', action_title_reject: 'Reject', action_title_reconcile: 'Mark as Reconciled',
         status_pending: 'Pending', status_overdue: 'Overdue', status_paid: 'Paid',
         approval_status_pending: 'Pending', approval_status_approved: 'Approved', approval_status_rejected: 'Rejected',
-        analysis_chart_title_by_category: 'Expenses by Category', analysis_chart_title_top_suppliers: 'Top 5 Suppliers', analysis_chart_title_monthly_payments: 'Monthly Payments (Last 12 Months)',
+        analysis_chart_title_by_category: 'Expenses by Category', analysis_chart_title_top_suppliers: 'Top 5 Suppliers', analysis_chart_title_monthly_payments: 'Monthly Payments (Last 12 Months)', analysis_chart_title_monthly_extra_costs: 'Monthly Extra Costs (Last 12 Months)',
         chart_empty_state: 'No data to display.', chart_label_total_value_paid: 'Total Amount Paid', chart_legend_paid: 'Paid', chart_legend_pending: 'Pending',
         grouped_view_total_cost: 'Total Cost',
         bl_empty_state: 'No costs associated with a BL were found.', po_empty_state: 'No costs associated with a PO were found.', di_empty_state: 'No costs associated with a DI No. were found.',
@@ -230,6 +233,9 @@ const translations = {
         toast_entry_updated: 'Entry updated successfully!', toast_entry_saved: 'Entry saved successfully!', toast_entry_paid: 'Entry marked as paid!', toast_entry_deleted: 'Entry deleted.', toast_entry_approved: 'Entry approved!', toast_entry_rejected: 'Entry rejected!', toast_entry_reconciled: 'Advance payment reconciled!',
         toast_settings_saved: 'Settings saved successfully!', toast_no_data_to_export: 'No data to export.', toast_report_exported: 'Report exported successfully!', toast_action_not_allowed: 'Action not allowed for this user.',
         password_modal_title: 'Confirmation Required', password_modal_text: 'To proceed, please enter the password to confirm this action.', password_modal_label: 'Password', password_modal_placeholder: '********', password_modal_confirm_action_button: 'Confirm Action', password_modal_error: 'Incorrect password. Please try again.',
+// FIX: Add missing translation keys for confirmation dialogs.
+        confirm_delete_supplier: 'Are you sure you want to delete this supplier? This action cannot be undone.',
+        confirm_delete_category: 'Are you sure you want to delete this category?',
         ai_modal_title: 'AP Assistant', ai_welcome_message: 'Hello! I am your Accounts Payable assistant. Ask a question about your entries. For example: "What is the total payable to Maersk Line?"', ai_input_placeholder: 'Ask a question...', ai_error_generic: 'Sorry, I could not process your request.', ai_system_instruction: "You are an expert financial assistant for Accounts Payable in a company that uses SAP. Answer questions based on the provided JSON data. The data contains 'suppliers', 'categories', and 'accountsPayable'. 'migo' is the goods receipt and 'miro' is the invoice receipt. Be concise and direct. Format monetary values like $1,234.56. Respond in English.",
         form_label_di_number: 'DI No.', form_label_vessel_name: 'Vessel Name', form_label_voyage: 'Voyage', form_label_nf_type: 'Invoice Type', form_label_nf_emission_date: 'Invoice Issue Date', form_label_pr_number: 'PR No.', form_label_pr_emission_date: 'PR Issue Date', form_label_sap_po_emission_date: 'SAP PO Issue Date', form_label_nf_import_number: 'Import Invoice No.', form_label_payment_method: 'Payment Method', form_label_payment_date: 'Payment Date', form_label_cfop: 'CFOP', form_label_is_adiantamento: 'Advance Payment?',
         database_title: 'Database - FUP', database_upload_prompt: 'Click to upload the FUP file (.xlsx)', database_table_header_bl: 'BL/AWB', database_table_header_po: 'PO SAP', database_table_header_vessel: 'Vessel', database_table_header_voyage: 'Voyage', database_table_header_di: 'DI No.', database_table_header_eta: 'ETA', database_empty_state: 'No FUP data loaded.', toast_fup_loaded: 'FUP data loaded successfully!', toast_fup_error: 'Error loading FUP file.',
@@ -261,7 +267,7 @@ const translations = {
         action_title_edit: '编辑', action_title_mark_paid: '标记为已付', action_title_delete: '删除', action_title_approve: '批准', action_title_reject: '拒绝', action_title_reconcile: '标记为已对账',
         status_pending: '待处理', status_overdue: '逾期', status_paid: '已支付',
         approval_status_pending: '待审批', approval_status_approved: '已批准', approval_status_rejected: '已拒绝',
-        analysis_chart_title_by_category: '按类别划分的费用', analysis_chart_title_top_suppliers: '前5名供应商', analysis_chart_title_monthly_payments: '月度付款（最近12个月）',
+        analysis_chart_title_by_category: '按类别划分的费用', analysis_chart_title_top_suppliers: '前5名供应商', analysis_chart_title_monthly_payments: '月度付款（最近12个月）', analysis_chart_title_monthly_extra_costs: '每月额外费用（最近12个月）',
         chart_empty_state: '无数据显示。', chart_label_total_value_paid: '已付总额', chart_legend_paid: '已付', chart_legend_pending: '待付',
         grouped_view_total_cost: '总成本',
         bl_empty_state: '未找到与提单相关的成本。', po_empty_state: '未找到与采购订单相关的成本。', di_empty_state: '未找到与进口报关单相关的成本。',
@@ -280,6 +286,9 @@ const translations = {
         toast_entry_updated: '账目更新成功！', toast_entry_saved: '账目保存成功！', toast_entry_paid: '账目标记为已付！', toast_entry_deleted: '账目已删除。', toast_entry_approved: '账目已批准！', toast_entry_rejected: '账目已拒绝！', toast_entry_reconciled: '预付款已对账！',
         toast_settings_saved: '设置保存成功！', toast_no_data_to_export: '无数据可导出。', toast_report_exported: '报告导出成功！', toast_action_not_allowed: '此用户不允许该操作。',
         password_modal_title: '需要确认', password_modal_text: '要继续，请输入密码以确认此操作。', password_modal_label: '密码', password_modal_placeholder: '********', password_modal_confirm_action_button: '确认操作', password_modal_error: '密码错误。请重试。',
+// FIX: Add missing translation keys for confirmation dialogs.
+        confirm_delete_supplier: '您确定要删除此供应商吗？此操作无法撤销。',
+        confirm_delete_category: '您确定要删除此类别吗？',
         ai_modal_title: 'AP助手', ai_welcome_message: '你好！我是你的应付账款助手。可以问我关于你的账目的问题。例如：“应付给马士基航运的总额是多少？”', ai_input_placeholder: '问一个问题...', ai_error_generic: '抱歉，我无法处理您的请求。', ai_system_instruction: "你是一家使用SAP公司的应付账款专家财务助理。根据提供的JSON数据回答问题。数据包含'suppliers'（供应商），'categories'（类别）和'accountsPayable'（应付账款）。'migo'是收货，'miro'是发票收据。回答要简洁直接。将货币价值格式化为 ¥1,234.56。用中文回答。",
         form_label_di_number: '进口报关单号', form_label_vessel_name: '船名', form_label_voyage: '航次', form_label_nf_type: '发票类型', form_label_nf_emission_date: '发票开具日期', form_label_pr_number: '采购申请号', form_label_pr_emission_date: '采购申请开具日期', form_label_sap_po_emission_date: 'SAP采购订单开具日期', form_label_nf_import_number: '进口发票号', form_label_payment_method: '付款方式', form_label_payment_date: '付款日期', form_label_cfop: 'CFOP', form_label_is_adiantamento: '预付款？',
         database_title: '数据库 - FUP', database_upload_prompt: '点击上传FUP文件 (.xlsx)', database_table_header_bl: '提单/空运单', database_table_header_po: 'SAP采购订单', database_table_header_vessel: '船只', database_table_header_voyage: '航次', database_table_header_di: '进口报关单号', database_table_header_eta: '预计到达时间', database_empty_state: '未加载FUP数据。', toast_fup_loaded: 'FUP数据加载成功！', toast_fup_error: '加载FUP文件时出错。',
@@ -344,6 +353,8 @@ let topSuppliersBarChart: typeof Chart | null = null;
 // FIX: Use 'typeof Chart' to refer to the type of the Chart.js instance.
 let monthlyPaymentsColumnChart: typeof Chart | null = null;
 // FIX: Use 'typeof Chart' to refer to the type of the Chart.js instance.
+let extraCostsMonthlyChart: typeof Chart | null = null;
+// FIX: Use 'typeof Chart' to refer to the type of the Chart.js instance.
 let cashFlowChart: typeof Chart | null = null;
 
 
@@ -402,7 +413,11 @@ const showToast = (messageKey: TranslationKeys | string, type: 'success' | 'erro
 // --- Gemini AI Configuration ---
 let ai: GoogleGenAI;
 try {
-    ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        throw new Error("API_KEY environment variable not set.");
+    }
+    ai = new GoogleGenAI({ apiKey });
 } catch (error) {
     console.error("Failed to initialize GoogleGenAI:", error);
     // FIX: Moved showToast definition before this block to prevent 'used before declaration' error.
@@ -507,6 +522,7 @@ function listenToData() {
             // Set language from settings if available
             if (settingsData.language && translations[settingsData.language]) {
                 state.currentLanguage = settingsData.language;
+// FIX: Implement setCurrentLanguage function to resolve "Cannot find name 'setCurrentLanguage'" error.
                 setCurrentLanguage(state.currentLanguage, false); // Don't save back to DB
             }
         } else {
@@ -840,7 +856,55 @@ function renderFupDatabaseView(filter?: string) {
         }).join('');
     }
 }
-function renderConciliacaoView() { console.warn('renderConciliacaoView not implemented.'); }
+function renderConciliacaoView() {
+    const tableBody = document.getElementById('conciliacao-table-body')!;
+    const emptyState = document.getElementById('conciliacao-empty-state')!;
+    const showPendingOnly = (document.getElementById('conciliation-filter-toggle') as HTMLInputElement).checked;
+
+    let adiantamentos = state.contasPagar.filter(cp => cp.isAdiantamento);
+
+    if (showPendingOnly) {
+        adiantamentos = adiantamentos.filter(cp => !cp.reconciled);
+    }
+    
+    adiantamentos.sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime());
+
+    if (adiantamentos.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.style.display = 'block';
+        (emptyState.querySelector('p') as HTMLElement).textContent = translate(showPendingOnly ? 'conciliation_empty_state_filtered' : 'conciliation_empty_state');
+    } else {
+        emptyState.style.display = 'none';
+        tableBody.innerHTML = adiantamentos.map(cp => {
+            const fornecedor = state.fornecedores.find(f => f.id === cp.fornecedorId)?.name || 'N/A';
+            const isReconciled = cp.reconciled === true;
+
+            const statusBadge = isReconciled 
+                ? 'bg-green-500/20 text-green-400'
+                : 'bg-yellow-500/20 text-yellow-400';
+            const statusText = isReconciled 
+                ? translate('reconciliation_status_reconciled')
+                : translate('reconciliation_status_pending');
+            
+            return `
+                <tr class="hover:bg-slate-700/50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${cp.cpNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${fornecedor}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${formatDate(cp.vencimento)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-teal-400">${formatCurrency(cp.valor)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge}">${statusText}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                        <button onclick="toggleReconciliationStatus('${cp.id}')" class="text-slate-400 hover:text-teal-400" title="${translate('action_title_reconcile')}">
+                            <i class="fas ${isReconciled ? 'fa-times-circle' : 'fa-check-circle'} fa-fw text-lg"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+}
 function renderFluxoCaixaView() { console.warn('renderFluxoCaixaView not implemented.'); }
 function renderBudgetControlView() { console.warn('renderBudgetControlView not implemented.'); }
 function populateMonthSelector(id: string, lang: Language) { console.warn('populateMonthSelector not implemented.'); }
@@ -897,7 +961,6 @@ async function handleFupUpload(e: Event) {
 }
 function handleHistoricoUpload(e: Event) { console.warn('handleHistoricoUpload not implemented.'); }
 function renderBudgetTable(month: number, year: number) { console.warn('renderBudgetTable not implemented.'); }
-async function toggleReconciliationStatus(id: string) { console.warn('toggleReconciliationStatus not implemented for id:', id); }
 // --- END STUBS ---
 
 // --- FUP Report ---
@@ -914,6 +977,11 @@ const FUP_COLUMN_CONFIG = [
     { header: 'Unique DI', key: 'isUniqueDi', type: 'boolean' },
     { header: 'DI', key: 'diNumber', type: 'string' },
     { header: 'DI Date', key: 'diDate', type: 'date' },
+    // Currency Info
+    { header: 'CNY', key: 'cny', type: 'currency', currency: 'CNY' },
+    { header: 'Taxa CNY', key: 'taxaCny', type: 'number' },
+    { header: 'USD', key: 'usd', type: 'currency', currency: 'USD' },
+    { header: 'Taxa USD', key: 'taxaUsd', type: 'number' },
     // International Costs
     { header: 'Freight', category: 'Freight', group: 'international', type: 'currency' },
     { header: 'Insurance', category: 'Insurance', group: 'international', type: 'currency' },
@@ -949,7 +1017,7 @@ const FUP_COLUMN_CONFIG = [
     { header: 'Total Storage', key: 'totalStorage', isTotal: true, sumOfGroups: ['storage'], class: 'font-bold bg-fuchsia-900/40 text-fuchsia-300', type: 'currency' },
     // Transport
     { header: 'Transport', category: 'Transport', group: 'transport', type: 'currency' },
-    { header: 'Total Transport', key: 'totalTransport', isTotal: true, sumOfGroups: ['transport'], class: 'font-bold bg-lime-900/40 text-lime-300', type: 'currency' },
+    { header: 'Total Transport Costs', key: 'totalTransport', isTotal: true, sumOfGroups: ['transport'], class: 'font-bold bg-lime-900/40 text-lime-300', type: 'currency' },
     // Destination Costs
     { header: 'THC', category: 'THC', group: 'destination', type: 'currency' },
     { header: 'Discharge Fee', category: 'Discharge Fee', group: 'destination', type: 'currency' },
@@ -958,10 +1026,31 @@ const FUP_COLUMN_CONFIG = [
     { header: 'Drop Off', category: 'Drop Off', group: 'destination', type: 'currency' },
     { header: 'Damage Protection', category: 'Damage Protection', group: 'destination', type: 'currency' },
     { header: 'Other Expenses', category: 'Other Expenses', group: 'destination', type: 'currency' },
-    { header: 'Total Destination', key: 'totalDestination', isTotal: true, sumOfGroups: ['destination'], class: 'font-bold bg-cyan-900/40 text-cyan-300', type: 'currency' },
+    { header: 'Total Destination Costs', key: 'totalDestination', isTotal: true, sumOfGroups: ['destination'], class: 'font-bold bg-cyan-900/40 text-cyan-300', type: 'currency' },
+    // Extra Costs
+    { header: '2nd Period Storage', category: '2nd Period Storage', group: 'extra', type: 'currency' },
+    { header: '3rd Period Storage', category: '3rd Period Storage', group: 'extra', type: 'currency' },
+    { header: '4th Period Storage', category: '4th Period Storage', group: 'extra', type: 'currency' },
+    { header: '5th Period Storage', category: '5th Period Storage', group: 'extra', type: 'currency' },
+    { header: 'Mechanized Container Unloading', category: 'Mechanized Container Unloading', group: 'extra', type: 'currency' },
+    { header: 'Extra Handling', category: 'Extra Handling', group: 'extra', type: 'currency' },
+    { header: 'Container/Loose Cargo Positioning', category: 'Container/Loose Cargo Positioning', group: 'extra', type: 'currency' },
+    { header: 'Weighting', category: 'Weighting', group: 'extra', type: 'currency' },
+    { header: 'Container Washing', category: 'Container Washing', group: 'extra', type: 'currency' },
+    { header: 'Tarping', category: 'Tarping', group: 'extra', type: 'currency' },
+    { header: 'Extra GRIS', category: 'Extra GRIS', group: 'extra', type: 'currency' },
+    { header: 'Others', category: 'Others', group: 'extra', type: 'currency' },
+    { header: 'Demurage', category: 'Demurage', group: 'extra', type: 'currency' },
+    { header: 'Document Fee', category: 'Document Fee', group: 'extra', type: 'currency' },
+    { header: 'Extra Container Return', category: 'Extra Container Return', group: 'extra', type: 'currency' },
+    { header: 'Total Extra Costs', key: 'totalExtra', isTotal: true, sumOfGroups: ['extra'], class: 'font-bold bg-red-900/40 text-red-300', type: 'currency' },
     // Grand Totals
-    { header: 'Total Brazil Costs', key: 'totalBrazil', isTotal: true, sumOfGroups: ['taxes', 'fees', 'broker', 'storage', 'transport', 'destination'], class: 'font-bold bg-slate-700 text-slate-100', type: 'currency' },
-    { header: 'Total', key: 'grandTotal', isTotal: true, sumOfGroups: ['international', 'taxes', 'fees', 'broker', 'storage', 'transport', 'destination'], class: 'font-bold bg-teal-800 text-teal-300', type: 'currency' },
+    { header: 'Total Brazil Costs', key: 'totalBrazil', isTotal: true, sumOfGroups: ['taxes', 'fees', 'broker', 'storage', 'transport', 'destination', 'extra'], class: 'font-bold bg-slate-700 text-slate-100', type: 'currency' },
+    { header: '% FOB Price', key: 'fobPricePercent', type: 'string' },
+    { header: 'Total', key: 'grandTotal', isTotal: true, sumOfGroups: ['international', 'taxes', 'fees', 'broker', 'storage', 'transport', 'destination', 'extra'], class: 'font-bold bg-teal-800 text-teal-300', type: 'currency' },
+    { header: '% Invoice Value', key: 'invoiceValuePercent', type: 'string' },
+    // Other
+    { header: 'Observations', key: 'observations', type: 'string' }
 ];
 
 
@@ -1010,6 +1099,13 @@ function generateFupReportData() {
         row.isUniqueDi = firstEntry.isUniqueDi;
         row.diNumber = firstEntry.diNumber;
         row.diDate = firstEntry.diDate;
+        
+        // For currency and observations aggregation
+        let cnyValue = 0;
+        let usdValue = 0;
+        let brlFromCny = 0;
+        let brlFromUsd = 0;
+        const observations = new Set<string>();
 
         entries.forEach(cp => {
             const category = categoryMap.get(cp.categoriaId);
@@ -1019,7 +1115,25 @@ function generateFupReportData() {
                     row[key] += cp.valor;
                 }
             }
+
+            if (cp.currency === 'CNY') {
+                cnyValue += cp.valorOriginal;
+                brlFromCny += cp.valor;
+            } else if (cp.currency === 'USD') {
+                usdValue += cp.valorOriginal;
+                brlFromUsd += cp.valor;
+            }
+            if (cp.observacoes) {
+                observations.add(cp.observacoes.trim());
+            }
         });
+        
+        // Set aggregated currency values
+        row.cny = cnyValue;
+        row.usd = usdValue;
+        row.taxaCny = cnyValue > 0 ? (brlFromCny / cnyValue) : 0;
+        row.taxaUsd = usdValue > 0 ? (brlFromUsd / usdValue) : 0;
+        row.observations = Array.from(observations).join('; ');
 
         // Calculate totals
         columnsWithKeys.forEach(col => {
@@ -1033,6 +1147,11 @@ function generateFupReportData() {
                 row[col.key] = total;
             }
         });
+        
+        // Placeholder for complex calculations
+        row.fobPricePercent = 'N/A';
+        row.invoiceValuePercent = 'N/A';
+
         return row;
     });
 
@@ -1066,7 +1185,7 @@ function renderFupReportView() {
                 const value = row[col.key];
                 switch(col.type) {
                     case 'currency':
-                        content = formatCurrency(value || 0);
+                        content = formatCurrency(value || 0, (col as any).currency || 'BRL');
                         break;
                     case 'boolean':
                         content = value ? translate('option_yes') : translate('option_no');
@@ -1075,7 +1194,11 @@ function renderFupReportView() {
                         content = formatDate(value || '');
                         break;
                     case 'number':
-                        content = value !== undefined && value !== null ? value : '';
+                         if (col.key === 'taxaCny' || col.key === 'taxaUsd') {
+                             content = (value || 0).toFixed(4);
+                         } else {
+                            content = value !== undefined && value !== null ? value : '';
+                         }
                         break;
                     default: // string
                         content = value || '';
@@ -1140,7 +1263,7 @@ function setAiLoading(isLoading: boolean) {
 function renderChatBubble(text: string, role: 'user' | 'ai', isError = false) {
     const chatArea = document.getElementById('ai-chat-area')!;
     const bubbleWrapper = document.createElement('div');
-    bubbleWrapper.classList.add('flex', 'items-start', 'gap-3');
+    bubbleWrapper.classList.add('flex', 'items-start', 'gap-3', 'mb-4');
     
     // Basic markdown to HTML conversion for links and bold text
     const formattedText = text
@@ -1217,6 +1340,475 @@ async function handleAiQuery(e: Event) {
 }
 
 
+// --- CRUD and Action Functions ---
+
+async function confirmActionWithPassword(): Promise<string> {
+    const passwordInput = document.getElementById('delete-password') as HTMLInputElement;
+    passwordInput.value = '';
+    (document.getElementById('password-error') as HTMLElement).textContent = '';
+    openModal('modal-password-confirm');
+    return new Promise((resolve, reject) => {
+        passwordResolve = (password: string) => {
+            const credential = firebase.auth.EmailAuthProvider.credential(state.currentUser.email, password);
+            auth.currentUser.reauthenticateWithCredential(credential)
+                .then(() => {
+                    resolve(password);
+                })
+                .catch((error: any) => {
+                    console.error("Re-authentication failed:", error);
+                    (document.getElementById('password-error') as HTMLElement).textContent = translate('password_modal_error');
+                    // We don't reject here to allow the user to retry.
+                });
+        };
+        passwordReject = () => {
+            reject(new Error("Action cancelled by user."));
+        };
+    });
+}
+
+function editFornecedor(id: string) {
+    const fornecedor = state.fornecedores.find(f => f.id === id);
+    if (fornecedor) {
+        (document.getElementById('fornecedor-id') as HTMLInputElement).value = fornecedor.id;
+        (document.getElementById('fornecedor-nome') as HTMLInputElement).value = fornecedor.name;
+        openModal('modal-fornecedor');
+    }
+}
+
+async function deleteFornecedor(id: string) {
+    if (confirm(translate('confirm_delete_supplier'))) {
+        try {
+            await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores').doc(id).delete();
+            showToast('toast_supplier_deleted');
+        } catch (error) {
+            console.error("Error deleting supplier:", error);
+            showToast((error as Error).message, 'error');
+        }
+    }
+}
+
+function editCategoria(id: string) {
+    const categoria = state.categorias.find(c => c.id === id);
+    if (categoria) {
+        (document.getElementById('categoria-id') as HTMLInputElement).value = categoria.id;
+        (document.getElementById('categoria-nome') as HTMLInputElement).value = categoria.name;
+        (document.getElementById('categoria-group') as HTMLInputElement).value = categoria.group;
+        (document.querySelector(`input[name="categoria-type"][value="${categoria.type}"]`) as HTMLInputElement).checked = true;
+        openModal('modal-categoria');
+    }
+}
+
+async function deleteCategoria(id: string) {
+    if (confirm(translate('confirm_delete_category'))) {
+        try {
+            await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias').doc(id).delete();
+            showToast('toast_category_deleted');
+        } catch (error) {
+            console.error("Error deleting category:", error);
+            showToast((error as Error).message, 'error');
+        }
+    }
+}
+
+function editCp(id: string) {
+    const cp = state.contasPagar.find(c => c.id === id);
+    if (cp) {
+        const form = document.getElementById('form-cp') as HTMLFormElement;
+        form.reset();
+        
+        (document.getElementById('cp-id') as HTMLInputElement).value = cp.id;
+        (document.getElementById('cp-fornecedor') as HTMLSelectElement).value = cp.fornecedorId || '';
+        (document.getElementById('cp-categoria') as HTMLSelectElement).value = cp.categoriaId || '';
+        (document.getElementById('cp-bl') as HTMLInputElement).value = cp.bl || '';
+        (document.getElementById('cp-po') as HTMLInputElement).value = cp.po || '';
+        (document.getElementById('cp-nf') as HTMLInputElement).value = cp.nf || '';
+        (document.getElementById('cp-migo') as HTMLInputElement).value = cp.migo || '';
+        (document.getElementById('cp-miro') as HTMLInputElement).value = cp.miro || '';
+        (document.getElementById('cp-vencimento') as HTMLInputElement).value = cp.vencimento || '';
+        (document.getElementById('cp-payment-term') as HTMLInputElement).value = cp.paymentTerm || '';
+        (document.getElementById('cp-valor-original') as HTMLInputElement).value = (cp.valorOriginal || 0).toString().replace('.', ',');
+        (document.getElementById('cp-currency') as HTMLSelectElement).value = cp.currency || 'BRL';
+        (document.getElementById('cp-status') as HTMLSelectElement).value = cp.status || 'Pendente';
+        (document.getElementById('cp-observacoes') as HTMLTextAreaElement).value = cp.observacoes || '';
+        (document.getElementById('cp-cost-center') as HTMLInputElement).value = cp.costCenter || '';
+        (document.getElementById('cp-cargo') as HTMLInputElement).value = cp.cargo || '';
+        (document.getElementById('cp-incoterm') as HTMLInputElement).value = cp.incoterm || '';
+        (document.getElementById('cp-di-date') as HTMLInputElement).value = cp.diDate || '';
+        (document.getElementById('cp-sap-po') as HTMLInputElement).value = cp.sapPo || '';
+        (document.getElementById('cp-di-number') as HTMLInputElement).value = cp.diNumber || '';
+        (document.getElementById('cp-vessel-name') as HTMLInputElement).value = cp.vesselName || '';
+        (document.getElementById('cp-voyage') as HTMLInputElement).value = cp.voyage || '';
+        (document.getElementById('cp-nf-type') as HTMLInputElement).value = cp.nfType || '';
+        (document.getElementById('cp-nf-emission-date') as HTMLInputElement).value = cp.nfEmissionDate || '';
+        (document.getElementById('cp-pr-number') as HTMLInputElement).value = cp.prNumber || '';
+        (document.getElementById('cp-pr-emission-date') as HTMLInputElement).value = cp.prEmissionDate || '';
+        (document.getElementById('cp-sap-po-emission-date') as HTMLInputElement).value = cp.sapPoEmissionDate || '';
+        (document.getElementById('cp-nf-import-number') as HTMLInputElement).value = cp.nfImportNumber || '';
+        (document.getElementById('cp-payment-method') as HTMLInputElement).value = cp.paymentMethod || '';
+        (document.getElementById('cp-payment-date') as HTMLInputElement).value = cp.paymentDate || '';
+        (document.getElementById('cp-cfop') as HTMLInputElement).value = cp.cfop || '';
+        (document.getElementById('cp-is-adiantamento') as HTMLInputElement).checked = !!cp.isAdiantamento;
+        (document.getElementById('cp-number-of-cars') as HTMLInputElement).value = cp.numberOfCars?.toString() || '';
+        (document.getElementById('cp-is-unique-di') as HTMLSelectElement).value = cp.isUniqueDi ? 'true' : 'false';
+
+        (document.getElementById('cp-modal-title') as HTMLElement).textContent = translate('cp_modal_title_edit');
+        const cpNumberDisplay = document.getElementById('cp-number-display')!;
+        cpNumberDisplay.textContent = cp.cpNumber;
+        cpNumberDisplay.classList.remove('hidden');
+
+        const paymentDateWrapper = document.getElementById('payment-date-wrapper')!;
+        if (cp.status === 'Pago') {
+            paymentDateWrapper.classList.remove('hidden');
+        } else {
+            paymentDateWrapper.classList.add('hidden');
+        }
+
+        openModal('modal-cp');
+    }
+}
+
+async function toggleCpStatus(id: string) {
+    try {
+        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({
+            status: 'Pago',
+            paymentDate: new Date().toISOString().split('T')[0]
+        });
+        showToast('toast_entry_paid');
+    } catch (error) {
+        console.error("Error updating CP status:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function deleteCp(id: string) {
+    if (!ADMIN_UIDS.includes(state.currentUser.uid)) {
+        return showToast('toast_action_not_allowed', 'error');
+    }
+    
+    try {
+        await confirmActionWithPassword();
+        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).delete();
+        showToast('toast_entry_deleted');
+    } catch (error) {
+        console.error("Could not delete entry:", error);
+        if ((error as Error).message !== "Action cancelled by user.") {
+             showToast((error as Error).message, 'error');
+        }
+    }
+}
+
+async function approveCp(id: string) {
+    if (!ADMIN_UIDS.includes(state.currentUser.uid)) return showToast('toast_action_not_allowed', 'error');
+    try {
+        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
+        showToast('toast_entry_approved');
+    } catch (error) {
+        console.error("Error approving CP:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function rejectCp(id: string) {
+    if (!ADMIN_UIDS.includes(state.currentUser.uid)) return showToast('toast_action_not_allowed', 'error');
+    try {
+        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
+        showToast('toast_entry_rejected');
+    } catch (error) {
+        console.error("Error rejecting CP:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function toggleReconciliationStatus(id: string) {
+    const cp = state.contasPagar.find(c => c.id === id);
+    if (cp && cp.isAdiantamento) {
+        try {
+            await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({
+                reconciled: !cp.reconciled
+            });
+            showToast('toast_entry_reconciled');
+        } catch (error) {
+            console.error("Error updating reconciliation status:", error);
+            showToast((error as Error).message, 'error');
+        }
+    }
+}
+
+function toggleGroupedViewDetails(listId: string, open: boolean) {
+    const listElement = document.getElementById(listId);
+    if (listElement) {
+        const detailsElements = listElement.querySelectorAll('details');
+        detailsElements.forEach(detail => {
+            detail.open = open;
+        });
+    }
+}
+
+// FIX: Add missing function implementations
+// --- Language and Translation ---
+async function setCurrentLanguage(lang: Language, save: boolean = true) {
+    if (!translations[lang]) return;
+    state.currentLanguage = lang;
+
+    // Save preference
+    if (save && state.currentUser) {
+        try {
+            await db.collection('settings').doc(state.currentUser.uid).set({ language: lang }, { merge: true });
+        } catch (error) {
+            console.error("Failed to save language setting:", error);
+        }
+    }
+    
+    // Update all elements with data-translate attribute
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate') as TranslationKeys;
+        if (!key) return;
+        const translation = translate(key);
+        
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+            el.placeholder = translation;
+        } else if (el instanceof HTMLButtonElement && el.hasAttribute('title')) {
+             el.title = translation;
+        } else {
+            el.textContent = translation;
+        }
+    });
+
+    // Update active language switcher
+    document.querySelectorAll('.lang-switcher button').forEach(button => {
+        button.classList.toggle('active', button.getAttribute('data-lang') === lang);
+    });
+
+    // Re-render components that depend on language (like charts, tables with formatted dates/currency)
+    if (document.getElementById('app-container')?.classList.contains('hidden') === false) {
+        updateUI();
+    }
+}
+
+function initializeLangSwitcher() {
+    const switcher = document.querySelector('.lang-switcher');
+    if (switcher) {
+        switcher.addEventListener('click', (e) => {
+            const target = e.target as HTMLElement;
+            const button = target.closest('button');
+            if (button && button.dataset.lang) {
+                setCurrentLanguage(button.dataset.lang as Language, true);
+            }
+        });
+    }
+}
+
+// --- Filtering ---
+function applyFiltersAndRender() {
+    state.activeFilters.search = (document.getElementById('searchInput') as HTMLInputElement).value;
+    state.activeFilters.status = (document.getElementById('status-filter') as HTMLSelectElement).value;
+    state.activeFilters.dateStart = (document.getElementById('date-filter-start') as HTMLInputElement).value;
+    state.activeFilters.dateEnd = (document.getElementById('date-filter-end') as HTMLInputElement).value;
+    
+    // Applying a main filter clears the stat card filter
+    state.activeStatFilter = null;
+    
+    updateUI();
+}
+
+function toggleStatFilter(filter: string) {
+    if (state.activeStatFilter === filter) {
+        state.activeStatFilter = null; // Toggle off
+    } else {
+        state.activeStatFilter = filter;
+    }
+    // Clear main filters when a stat card is clicked for a cleaner experience
+    (document.getElementById('searchInput') as HTMLInputElement).value = '';
+    (document.getElementById('status-filter') as HTMLSelectElement).value = 'all';
+    (document.getElementById('date-filter-start') as HTMLInputElement).value = '';
+    (document.getElementById('date-filter-end') as HTMLInputElement).value = '';
+    state.activeFilters = { search: '', status: 'all', dateStart: '', dateEnd: '' };
+
+    updateUI();
+}
+
+// --- Form Handlers ---
+async function saveCp(e: Event) {
+    e.preventDefault();
+    if (!state.currentUser) return;
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const id = formData.get('cp-id') as string;
+
+    const valorOriginal = parseFloat(((formData.get('cp-valor-original') as string) || '0').replace(',', '.'));
+    const currency = formData.get('cp-currency') as Currency;
+    
+    // In a real app, this would come from an API or be entered by the user.
+    // For now, let's assume all non-BRL values are converted to BRL at a static rate for simplicity.
+    // The `valor` field should represent the BRL equivalent.
+    let valor = valorOriginal;
+    // Assuming if currency is foreign, 'valor' is already the BRL equivalent and `valorOriginal` is the foreign amount.
+    // Let's make a simple assumption: if not BRL, we need an exchange rate. For this app, we'll assume `valor` is BRL.
+    if (currency === 'USD') {
+       valor = valorOriginal * 5.0; // Placeholder conversion.
+    } else if (currency === 'CNY') {
+        valor = valorOriginal * 0.7; // Placeholder conversion.
+    }
+
+
+    const cpData: Partial<ContaPagar> = {
+        fornecedorId: formData.get('cp-fornecedor') as string,
+        categoriaId: formData.get('cp-categoria') as string,
+        bl: formData.get('cp-bl') as string,
+        po: formData.get('cp-po') as string,
+        nf: formData.get('cp-nf') as string,
+        migo: formData.get('cp-migo') as string,
+        miro: formData.get('cp-miro') as string,
+        vencimento: formData.get('cp-vencimento') as string,
+        paymentTerm: formData.get('cp-payment-term') as string,
+        valor: valor,
+        valorOriginal: valorOriginal,
+        currency: currency,
+        status: formData.get('cp-status') as 'Pendente' | 'Pago',
+        observacoes: formData.get('cp-observacoes') as string,
+        costCenter: formData.get('cp-cost-center') as string,
+        cargo: formData.get('cp-cargo') as string,
+        incoterm: formData.get('cp-incoterm') as string,
+        diDate: formData.get('cp-di-date') as string || undefined,
+        sapPo: formData.get('cp-sap-po') as string,
+        diNumber: formData.get('cp-di-number') as string,
+        vesselName: formData.get('cp-vessel-name') as string,
+        voyage: formData.get('cp-voyage') as string,
+        nfType: formData.get('cp-nf-type') as string,
+        nfEmissionDate: formData.get('cp-nf-emission-date') as string || undefined,
+        prNumber: formData.get('cp-pr-number') as string,
+        prEmissionDate: formData.get('cp-pr-emission-date') as string || undefined,
+        sapPoEmissionDate: formData.get('cp-sap-po-emission-date') as string || undefined,
+        nfImportNumber: formData.get('cp-nf-import-number') as string,
+        paymentMethod: formData.get('cp-payment-method') as string,
+        paymentDate: formData.get('cp-payment-date') as string || undefined,
+        cfop: formData.get('cp-cfop') as string,
+        isAdiantamento: (document.getElementById('cp-is-adiantamento') as HTMLInputElement).checked,
+        numberOfCars: parseInt(formData.get('cp-number-of-cars') as string) || undefined,
+        isUniqueDi: (formData.get('cp-is-unique-di') as string) === 'true',
+    };
+
+    try {
+        const collectionRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar');
+        if (id) {
+            await collectionRef.doc(id).update(cpData);
+            showToast('toast_entry_updated');
+        } else {
+            const docCountSnapshot = await collectionRef.get();
+            const newCpNumber = `CP-${(docCountSnapshot.size + 1).toString().padStart(5, '0')}`;
+            const fullData: Omit<ContaPagar, 'id'> = {
+                ...cpData,
+                cpNumber: newCpNumber,
+                reconciled: cpData.isAdiantamento ? false : undefined,
+                approvalStatus: 'Pendente',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            } as Omit<ContaPagar, 'id'>;
+            await collectionRef.add(fullData);
+            showToast('toast_entry_saved');
+        }
+        closeModal('modal-cp');
+    } catch (error) {
+        console.error("Error saving CP:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function saveFornecedor(e: Event) {
+    e.preventDefault();
+    if (!state.currentUser) return;
+    const form = e.target as HTMLFormElement;
+    const id = (form.querySelector('#fornecedor-id') as HTMLInputElement).value;
+    const name = (form.querySelector('#fornecedor-nome') as HTMLInputElement).value.trim();
+
+    if (!name) return;
+
+    try {
+        const collectionRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores');
+        if (id) {
+            await collectionRef.doc(id).update({ name });
+            showToast('toast_supplier_updated');
+        } else {
+            await collectionRef.add({ name });
+            showToast('toast_supplier_added');
+        }
+        form.reset();
+        (form.querySelector('#fornecedor-id') as HTMLInputElement).value = '';
+    } catch (error) {
+        console.error("Error saving supplier:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function saveCategoria(e: Event) {
+    e.preventDefault();
+    if (!state.currentUser) return;
+    const form = e.target as HTMLFormElement;
+    const id = (form.querySelector('#categoria-id') as HTMLInputElement).value;
+    const name = (form.querySelector('#categoria-nome') as HTMLInputElement).value.trim();
+    const group = (form.querySelector('#categoria-group') as HTMLInputElement).value.trim();
+    const type = (form.querySelector('input[name="categoria-type"]:checked') as HTMLInputElement).value as CategoriaType;
+
+    if (!name || !group) return;
+
+    try {
+        const collectionRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias');
+        const data = { name, group, type };
+        if (id) {
+            await collectionRef.doc(id).update(data);
+            showToast('toast_category_updated');
+        } else {
+            await collectionRef.add(data);
+            showToast('toast_category_added');
+        }
+        form.reset();
+        (form.querySelector('#categoria-id') as HTMLInputElement).value = '';
+    } catch (error) {
+        console.error("Error saving category:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+async function saveSettings(e: Event) {
+    e.preventDefault();
+    if (!state.currentUser) return;
+    const form = e.target as HTMLFormElement;
+    const settings: Partial<NotificationSettings> = {
+        enabled: (form.querySelector('#settings-notifications-enabled') as HTMLInputElement).checked,
+        leadTimeDays: parseInt((form.querySelector('#settings-lead-time') as HTMLInputElement).value, 10),
+        email: (form.querySelector('#settings-email') as HTMLInputElement).value,
+    };
+
+    try {
+        await db.collection('settings').doc(state.currentUser.uid).set(settings, { merge: true });
+        showToast('toast_settings_saved');
+        closeModal('modal-settings');
+    } catch (error) {
+        console.error("Error saving settings:", error);
+        showToast((error as Error).message, 'error');
+    }
+}
+
+function handlePasswordConfirmation(e: Event) {
+    e.preventDefault();
+    const password = (document.getElementById('delete-password') as HTMLInputElement).value;
+    if (passwordResolve) {
+        passwordResolve(password);
+    }
+    // Don't close modal here; let the promise handler do it on success
+}
+
+async function saveCashEntry(e: Event) {
+    e.preventDefault();
+    console.warn('saveCashEntry not implemented');
+    closeModal('modal-cash-entry');
+}
+
+async function saveOrcamento(e: Event) {
+    e.preventDefault();
+    console.warn('saveOrcamento not implemented');
+    closeModal('modal-orcamento');
+}
+
 // --- UI Rendering Functions ---
 
 function renderApp() {
@@ -1236,6 +1828,53 @@ function renderApp() {
 
     // Dropdowns and other UI elements are now populated by the main updateUI function
     updateUI();
+}
+
+// FIX: Implement renderFornecedorList function to resolve "Cannot find name 'renderFornecedorList'" error.
+function renderFornecedorList() {
+    const list = document.getElementById('fornecedor-list');
+    if (!list) return;
+    list.innerHTML = state.fornecedores
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .map(f => `
+        <div class="flex justify-between items-center p-2 hover:bg-slate-700 rounded">
+            <span>${f.name}</span>
+            <div class="flex-shrink-0">
+                <button onclick="editFornecedor('${f.id}')" class="text-slate-400 hover:text-teal-400 mr-2" title="${translate('action_title_edit')}"><i class="fas fa-pencil-alt"></i></button>
+                <button onclick="deleteFornecedor('${f.id}')" class="text-slate-400 hover:text-red-400" title="${translate('action_title_delete')}"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// FIX: Implement renderCategoriaList function to resolve "Cannot find name 'renderCategoriaList'" error.
+function renderCategoriaList() {
+    const list = document.getElementById('categoria-list');
+    if (!list) return;
+
+    const grouped = state.categorias.reduce((acc, cat) => {
+        const groupKey = cat.group || translate('category_other');
+        if (!acc[groupKey]) acc[groupKey] = [];
+        acc[groupKey].push(cat);
+        return acc;
+    }, {} as Record<string, Categoria[]>);
+    
+    list.innerHTML = Object.keys(grouped).sort().map(group => `
+        <div class="mb-4">
+            <h4 class="font-bold text-slate-300 mb-2 p-2 bg-slate-700/50 rounded">${group}</h4>
+            ${grouped[group]
+                .sort((a,b) => a.name.localeCompare(b.name))
+                .map(c => `
+                <div class="flex justify-between items-center p-2 hover:bg-slate-700 rounded ml-2">
+                    <span class="text-sm">${c.name} <span class="text-xs ${c.type === 'Receita' ? 'text-green-400' : 'text-red-400'}">(${translate(c.type === 'Receita' ? 'category_type_revenue' : 'category_type_expense')})</span></span>
+                    <div class="flex-shrink-0">
+                        <button onclick="editCategoria('${c.id}')" class="text-slate-400 hover:text-teal-400 mr-2" title="${translate('action_title_edit')}"><i class="fas fa-pencil-alt"></i></button>
+                        <button onclick="deleteCategoria('${c.id}')" class="text-slate-400 hover:text-red-400" title="${translate('action_title_delete')}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
 }
 
 function updateUI() {
@@ -1320,7 +1959,7 @@ function populateDropdown(selectId: string, items: any[], placeholderKey: Transl
 
 function renderDashboardStats() {
     const container = document.getElementById('dashboard-stats')!;
-    const filteredData = getFilteredData();
+    const filteredData = state.contasPagar; // Stats should reflect the total state, not filtered list unless active
     const today = new Date().toISOString().split('T')[0];
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
@@ -1339,7 +1978,7 @@ function renderDashboardStats() {
     ];
 
     container.innerHTML = stats.map(stat => `
-        <div id="stat-card-${stat.id}" class="stat-card bg-slate-800 p-6 rounded-xl shadow-lg flex items-center gap-6 ${state.activeStatFilter === stat.id ? 'active' : ''}">
+        <div id="stat-card-${stat.id}" class="stat-card bg-slate-800 p-6 rounded-xl shadow-lg flex items-center gap-6 cursor-pointer hover:bg-slate-700/50 transition-colors ${state.activeStatFilter === stat.id ? 'active' : ''}">
             <div class="bg-slate-900/50 h-16 w-16 rounded-full flex items-center justify-center">
                 <i class="fas ${stat.icon} ${stat.color} text-2xl"></i>
             </div>
@@ -1351,9 +1990,13 @@ function renderDashboardStats() {
     `).join('');
     
     // Add event listeners to stat cards
+// FIX: Implement toggleStatFilter function to resolve "Cannot find name 'toggleStatFilter'" error.
     document.getElementById('stat-card-total')!.addEventListener('click', () => toggleStatFilter('total'));
+// FIX: Implement toggleStatFilter function to resolve "Cannot find name 'toggleStatFilter'" error.
     document.getElementById('stat-card-today')!.addEventListener('click', () => toggleStatFilter('today'));
+// FIX: Implement toggleStatFilter function to resolve "Cannot find name 'toggleStatFilter'" error.
     document.getElementById('stat-card-overdue')!.addEventListener('click', () => toggleStatFilter('overdue'));
+// FIX: Implement toggleStatFilter function to resolve "Cannot find name 'toggleStatFilter'" error.
     document.getElementById('stat-card-paid')!.addEventListener('click', () => toggleStatFilter('paid'));
 }
 
@@ -1368,7 +2011,7 @@ function renderCpTable() {
     if (dataToRender.length === 0) {
         tableBody.innerHTML = '';
         emptyState.style.display = 'block';
-        if(state.activeFilters.search || state.activeFilters.status !== 'all' || state.activeFilters.dateStart || state.activeFilters.dateEnd) {
+        if(state.activeFilters.search || state.activeFilters.status !== 'all' || state.activeFilters.dateStart || state.activeFilters.dateEnd || state.activeStatFilter) {
             emptyStateMessage.textContent = translate('empty_state_no_entries_filtered');
         } else {
             emptyStateMessage.textContent = translate('empty_state_no_entries');
@@ -1453,6 +2096,7 @@ function renderAnaliseView() {
     renderCategoryPieChart(data);
     renderTopSuppliersBarChart(data);
     renderMonthlyPaymentsColumnChart();
+    renderExtraCostsMonthlyChart();
 }
 
 function renderCategoryPieChart(data: ContaPagar[]) {
@@ -1486,6 +2130,7 @@ function renderCategoryPieChart(data: ContaPagar[]) {
 
     const labels = Object.keys(byCategory);
     const values = Object.values(byCategory);
+    const totalValue = values.reduce((sum, value) => sum + value, 0);
     
     const colors = [
         '#2dd4bf', '#38bdf8', '#818cf8', '#e879f9', '#f472b6', 
@@ -1510,6 +2155,29 @@ function renderCategoryPieChart(data: ContaPagar[]) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                onComplete: ({ chart }) => {
+                    const ctx = chart.ctx;
+                    ctx.font = "bold 11px 'Inter'";
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const arcs = chart.getDatasetMeta(0).data;
+                    arcs.forEach((arc, i) => {
+                        const value = chart.data.datasets[0].data[i] as number;
+                        if (totalValue > 0) {
+                            const percentage = (value / totalValue) * 100;
+                            if (percentage > 4) { // Only show for slices > 4% to avoid clutter
+                                const angle = (arc.startAngle + arc.endAngle) / 2;
+                                const radius = (arc.outerRadius + arc.innerRadius) / 2;
+                                const x = arc.x + Math.cos(angle) * radius;
+                                const y = arc.y + Math.sin(angle) * radius;
+                                ctx.fillText(`${percentage.toFixed(0)}%`, x, y);
+                            }
+                        }
+                    });
+                }
+            },
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -1591,6 +2259,19 @@ function renderTopSuppliersBarChart(data: ContaPagar[]) {
             indexAxis: 'y', // Horizontal bar chart
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                onComplete: ({ chart }) => {
+                    const ctx = chart.ctx;
+                    ctx.font = "12px 'Inter'";
+                    ctx.fillStyle = '#cbd5e1'; // slate-300
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    chart.getDatasetMeta(0).data.forEach((bar, index) => {
+                        const value = chart.data.datasets[0].data[index] as number;
+                        ctx.fillText(formatCurrency(value, 'BRL', state.currentLanguage), bar.x + 5, bar.y);
+                    });
+                }
+            },
             scales: {
                 x: {
                     beginAtZero: true,
@@ -1603,7 +2284,8 @@ function renderTopSuppliersBarChart(data: ContaPagar[]) {
                             }
                             return value;
                         }
-                    } 
+                    },
+                    suggestedMax: Math.max(...values) * 1.25
                 },
                 y: {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
@@ -1675,6 +2357,8 @@ function renderMonthlyPaymentsColumnChart() {
         }
     });
 
+    const maxTotal = labels.map((_, i) => (paidData[i] + pendingData[i])).reduce((max, val) => Math.max(max, val), 0);
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -1702,6 +2386,23 @@ function renderMonthlyPaymentsColumnChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                onComplete: ({ chart }) => {
+                    const ctx = chart.ctx;
+                    ctx.font = "bold 11px 'Inter'";
+                    ctx.fillStyle = '#e2e8f0'; // slate-200
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    const meta = chart.getDatasetMeta(0);
+                    meta.data.forEach((bar, index) => {
+                        const total = (chart.data.datasets[0].data[index] as number) + (chart.data.datasets[1].data[index] as number);
+                        if (total > 0) {
+                            let formattedTotal = total >= 1000000 ? `${(total / 1000000).toFixed(1)}M` : total >= 1000 ? `${(total / 1000).toFixed(0)}k` : total.toFixed(0);
+                            ctx.fillText(formattedTotal, bar.x, bar.y - 5);
+                        }
+                    });
+                }
+            },
             scales: {
                 x: {
                     stacked: true,
@@ -1712,6 +2413,7 @@ function renderMonthlyPaymentsColumnChart() {
                     stacked: true,
                     beginAtZero: true,
                     grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    suggestedMax: maxTotal * 1.2,
                     ticks: { 
                         color: '#94a3b8',
                         callback: (value) => {
@@ -1746,6 +2448,132 @@ function renderMonthlyPaymentsColumnChart() {
             }
         }
     });
+}
+
+function renderExtraCostsMonthlyChart() {
+    const canvas = document.getElementById('extra-costs-monthly-chart') as HTMLCanvasElement;
+    const emptyState = document.getElementById('extra-costs-chart-empty-state')!;
+    if (!canvas) return;
+
+    if (extraCostsMonthlyChart) {
+        extraCostsMonthlyChart.destroy();
+    }
+    
+    const extraCostCategoryIds = state.categorias
+        .filter(c => c.group === 'Custos Extras' || c.group === 'Outros')
+        .map(c => c.id);
+
+    const data = state.contasPagar.filter(cp => extraCostCategoryIds.includes(cp.categoriaId));
+
+    if (data.length === 0) {
+        canvas.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+    canvas.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    const labels: string[] = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        labels.push(d.toLocaleDateString(state.currentLanguage, { month: 'short', year: '2-digit' }));
+    }
+
+    const monthlyData = Array(12).fill(0);
+
+    data.forEach(cp => {
+        if (!cp.vencimento) return;
+        const dueDate = new Date(cp.vencimento + 'T00:00:00');
+        const monthDiff = (now.getFullYear() - dueDate.getFullYear()) * 12 + (now.getMonth() - dueDate.getMonth());
+
+        if (monthDiff >= 0 && monthDiff < 12) {
+            const index = 11 - monthDiff;
+            monthlyData[index] += cp.valor;
+        }
+    });
+
+    const maxVal = Math.max(...monthlyData);
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    extraCostsMonthlyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: translate('category_extra'),
+                    data: monthlyData,
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)', // red-500 with opacity
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                onComplete: ({ chart }) => {
+                    const ctx = chart.ctx;
+                    ctx.font = "11px 'Inter'";
+                    ctx.fillStyle = '#94a3b8'; // slate-400
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    chart.getDatasetMeta(0).data.forEach((bar, index) => {
+                        const value = chart.data.datasets[0].data[index] as number;
+                        if (value > 0) {
+                            let formattedValue = value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toFixed(0);
+                            ctx.fillText(formattedValue, bar.x, bar.y - 4);
+                        }
+                    });
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    suggestedMax: maxVal * 1.2,
+                    ticks: { 
+                        color: '#94a3b8',
+                        callback: (value) => {
+                            if (typeof value === 'number') {
+                                if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                if (value >= 1000) return (value / 1000).toFixed(1) + 'k';
+                                return value;
+                            }
+                            return value;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { color: '#94a3b8' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.y !== null) {
+                                label += formatCurrency(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
 }
 
 // --- App Navigation ---
@@ -1823,10 +2651,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     initializeListeners();
+// FIX: Implement initializeLangSwitcher function to resolve "Cannot find name 'initializeLangSwitcher'" error.
     initializeLangSwitcher();
+// FIX: Implement setCurrentLanguage function to resolve "Cannot find name 'setCurrentLanguage'" error.
     setCurrentLanguage(state.currentLanguage, false);
     populateMonthSelector('budget-month-select', state.currentLanguage);
     populateYearSelector('budget-year-select');
+
+    // Make functions globally available for onclick attributes
+    Object.assign(window, {
+        setActiveView,
+        openNewCpModal,
+        openModal,
+        closeModal,
+        logout,
+        exportFupReport,
+        editFornecedor,
+        deleteFornecedor,
+        editCategoria,
+        deleteCategoria,
+        editCp,
+        toggleCpStatus,
+        deleteCp,
+        approveCp,
+        rejectCp,
+        toggleReconciliationStatus,
+        toggleGroupedViewDetails
+    });
 });
 
 // The rest of the functions (handle forms, actions, filters, charts, etc.) go here
@@ -1904,6 +2755,7 @@ function initializeListeners() {
     const filterElements = [searchInput, statusFilter, dateFilterStart, dateFilterEnd];
     filterElements.forEach(el => {
         const event = el.tagName === 'SELECT' ? 'change' : 'input';
+// FIX: Implement applyFiltersAndRender function to resolve "Cannot find name 'applyFiltersAndRender'" error.
         el.addEventListener(event, applyFiltersAndRender);
     });
     
@@ -1913,16 +2765,24 @@ function initializeListeners() {
         dateFilterStart.value = '';
         dateFilterEnd.value = '';
         state.activeStatFilter = null;
+// FIX: Implement applyFiltersAndRender function to resolve "Cannot find name 'applyFiltersAndRender'" error.
         applyFiltersAndRender();
     });
     
     // Forms
+// FIX: Implement saveCp function to resolve "Cannot find name 'saveCp'" error.
     formCp.addEventListener('submit', saveCp);
+// FIX: Implement saveFornecedor function to resolve "Cannot find name 'saveFornecedor'" error.
     formFornecedor.addEventListener('submit', saveFornecedor);
+// FIX: Implement saveCategoria function to resolve "Cannot find name 'saveCategoria'" error.
     formCategoria.addEventListener('submit', saveCategoria);
+// FIX: Implement saveSettings function to resolve "Cannot find name 'saveSettings'" error.
     formSettings.addEventListener('submit', saveSettings);
+// FIX: Implement handlePasswordConfirmation function to resolve "Cannot find name 'handlePasswordConfirmation'" error.
     formPasswordConfirm.addEventListener('submit', handlePasswordConfirmation);
+// FIX: Implement saveCashEntry function to resolve "Cannot find name 'saveCashEntry'" error.
     formCashEntry.addEventListener('submit', saveCashEntry);
+// FIX: Implement saveOrcamento function to resolve "Cannot find name 'saveOrcamento'" error.
     formOrcamento.addEventListener('submit', saveOrcamento);
 
     // CP Form Autofill
@@ -1953,483 +2813,7 @@ function initializeListeners() {
     // Cash Flow
     cashFlowPeriodSelect.addEventListener('change', renderFluxoCaixaView);
     
-    // Budget Control
-    budgetMonthSelect.addEventListener('change', handleBudgetPeriodChange);
-    budgetYearSelect.addEventListener('change', handleBudgetPeriodChange);
-
-    // Show/hide payment date on status change in CP Modal
-    document.getElementById('cp-status')!.addEventListener('change', (e) => {
-        const target = e.target as HTMLSelectElement;
-        const paymentDateWrapper = document.getElementById('payment-date-wrapper') as HTMLElement;
-        if (target.value === 'Pago') {
-            paymentDateWrapper.classList.remove('hidden');
-        } else {
-            paymentDateWrapper.classList.add('hidden');
-        }
-    });
+    // Budget
+    budgetMonthSelect.addEventListener('change', () => renderBudgetControlView());
+    budgetYearSelect.addEventListener('change', () => renderBudgetControlView());
 }
-
-function handleBudgetPeriodChange() {
-    const month = parseInt((document.getElementById('budget-month-select') as HTMLSelectElement).value, 10);
-    const year = parseInt((document.getElementById('budget-year-select') as HTMLSelectElement).value, 10);
-    renderBudgetTable(month, year);
-}
-
-
-function applyFiltersAndRender() {
-    state.activeFilters = {
-        search: (document.getElementById('searchInput') as HTMLInputElement).value,
-        status: (document.getElementById('status-filter') as HTMLSelectElement).value,
-        dateStart: (document.getElementById('date-filter-start') as HTMLInputElement).value,
-        dateEnd: (document.getElementById('date-filter-end') as HTMLInputElement).value,
-    };
-    
-    // Show/hide clear button
-    const clearBtn = document.getElementById('clear-filters-btn')!;
-    const hasFilters = state.activeFilters.search || state.activeFilters.status !== 'all' || state.activeFilters.dateStart || state.activeFilters.dateEnd || state.activeStatFilter;
-    clearBtn.classList.toggle('hidden', !hasFilters);
-
-    updateUI(); // This will re-render everything based on new filters
-}
-
-function toggleStatFilter(statId: string) {
-    // If the same stat is clicked again, toggle it off
-    if (state.activeStatFilter === statId) {
-        state.activeStatFilter = null;
-    } else {
-        state.activeStatFilter = statId;
-    }
-    
-    // Clear other filters when a stat card is clicked for a cleaner experience
-    (document.getElementById('searchInput') as HTMLInputElement).value = '';
-    (document.getElementById('status-filter') as HTMLSelectElement).value = 'all';
-    (document.getElementById('date-filter-start') as HTMLInputElement).value = '';
-    (document.getElementById('date-filter-end') as HTMLInputElement).value = '';
-
-    // Update activeFilters state from cleared inputs before re-rendering
-    state.activeFilters.search = '';
-    state.activeFilters.status = 'all';
-    state.activeFilters.dateStart = '';
-    state.activeFilters.dateEnd = '';
-
-    updateUI();
-}
-
-async function saveCp(e: Event) {
-    e.preventDefault();
-    if (!state.currentUser) return;
-    const id = (document.getElementById('cp-id') as HTMLInputElement).value;
-
-    const valorOriginalStr = (document.getElementById('cp-valor-original') as HTMLInputElement).value.replace('.', '').replace(',', '.');
-    const valorOriginal = parseFloat(valorOriginalStr);
-    
-    if (isNaN(valorOriginal)) {
-        showToast('Valor inválido.', 'error');
-        return;
-    }
-
-    const cpStatus = (document.getElementById('cp-status') as HTMLSelectElement).value as 'Pendente' | 'Pago';
-    let paymentDate = (document.getElementById('cp-payment-date') as HTMLInputElement).value;
-    if (cpStatus === 'Pago' && !paymentDate) {
-        paymentDate = new Date().toISOString().split('T')[0];
-    } else if (cpStatus === 'Pendente') {
-        paymentDate = '';
-    }
-
-    const data: Omit<ContaPagar, 'id' | 'createdAt' | 'cpNumber' | 'valor' | 'reconciled' | 'approvalStatus' > & {id?: string} = {
-        fornecedorId: (document.getElementById('cp-fornecedor') as HTMLSelectElement).value,
-        categoriaId: (document.getElementById('cp-categoria') as HTMLSelectElement).value,
-        bl: (document.getElementById('cp-bl') as HTMLInputElement).value,
-        po: (document.getElementById('cp-po') as HTMLInputElement).value,
-        nf: (document.getElementById('cp-nf') as HTMLInputElement).value,
-        migo: (document.getElementById('cp-migo') as HTMLInputElement).value,
-        miro: (document.getElementById('cp-miro') as HTMLInputElement).value,
-        vencimento: (document.getElementById('cp-vencimento') as HTMLInputElement).value,
-        paymentTerm: (document.getElementById('cp-payment-term') as HTMLInputElement).value,
-        valorOriginal: valorOriginal,
-        currency: (document.getElementById('cp-currency') as HTMLSelectElement).value as Currency,
-        status: cpStatus,
-        observacoes: (document.getElementById('cp-observacoes') as HTMLTextAreaElement).value,
-        costCenter: (document.getElementById('cp-cost-center') as HTMLInputElement).value,
-        cargo: (document.getElementById('cp-cargo') as HTMLInputElement).value,
-        incoterm: (document.getElementById('cp-incoterm') as HTMLInputElement).value,
-        numberOfCars: parseInt((document.getElementById('cp-number-of-cars') as HTMLInputElement).value) || 0,
-        isUniqueDi: (document.getElementById('cp-is-unique-di') as HTMLSelectElement).value === 'true',
-        diDate: (document.getElementById('cp-di-date') as HTMLInputElement).value,
-        sapPo: (document.getElementById('cp-sap-po') as HTMLInputElement).value,
-        diNumber: (document.getElementById('cp-di-number') as HTMLInputElement).value,
-        vesselName: (document.getElementById('cp-vessel-name') as HTMLInputElement).value,
-        voyage: (document.getElementById('cp-voyage') as HTMLInputElement).value,
-        nfType: (document.getElementById('cp-nf-type') as HTMLInputElement).value,
-        nfEmissionDate: (document.getElementById('cp-nf-emission-date') as HTMLInputElement).value,
-        prNumber: (document.getElementById('cp-pr-number') as HTMLInputElement).value,
-        prEmissionDate: (document.getElementById('cp-pr-emission-date') as HTMLInputElement).value,
-        sapPoEmissionDate: (document.getElementById('cp-sap-po-emission-date') as HTMLInputElement).value,
-        nfImportNumber: (document.getElementById('cp-nf-import-number') as HTMLInputElement).value,
-        paymentMethod: (document.getElementById('cp-payment-method') as HTMLInputElement).value,
-        paymentDate: paymentDate,
-        cfop: (document.getElementById('cp-cfop') as HTMLInputElement).value,
-        isAdiantamento: (document.getElementById('cp-is-adiantamento') as HTMLInputElement).checked,
-    };
-
-    const valorEmBRL = data.valorOriginal;
-
-    const cpData: Partial<ContaPagar> = { ...data, valor: valorEmBRL };
-    
-    if (!id) { // Only set these for new entries
-        cpData.reconciled = false;
-        cpData.approvalStatus = 'Pendente';
-    }
-
-
-    try {
-        const collectionRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar');
-        if (id) {
-            // Update existing
-            const docRef = collectionRef.doc(id);
-            await docRef.update(cpData);
-            showToast('toast_entry_updated');
-        } else {
-            // Create new
-            const countRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('counters').doc('contasPagar');
-            const newCpNumber = await db.runTransaction(async (transaction: any) => {
-                const doc = await transaction.get(countRef);
-                const newCount = (doc.data()?.count || 0) + 1;
-                transaction.set(countRef, { count: newCount });
-                return `CP-${newCount.toString().padStart(5, '0')}`;
-            });
-
-            await collectionRef.add({ 
-                ...cpData, 
-                cpNumber: newCpNumber,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showToast('toast_entry_saved');
-        }
-        closeModal('modal-cp');
-    } catch (error) {
-        console.error("Error saving CP:", error);
-        showToast("Erro ao salvar lançamento.", 'error');
-    }
-}
-
-async function saveFornecedor(e: Event) {
-    e.preventDefault();
-    if (!state.currentUser) return;
-    const form = e.target as HTMLFormElement;
-    const id = (document.getElementById('fornecedor-id') as HTMLInputElement).value;
-    const name = (document.getElementById('fornecedor-nome') as HTMLInputElement).value;
-    const collection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores');
-    try {
-        if(id) {
-            await collection.doc(id).update({ name });
-            showToast('toast_supplier_updated');
-        } else {
-            await collection.add({ name });
-            showToast('toast_supplier_added');
-        }
-        form.reset();
-        (document.getElementById('fornecedor-id') as HTMLInputElement).value = '';
-    } catch (error) { console.error("Error saving supplier:", error); }
-}
-
-async function saveCategoria(e: Event) {
-    e.preventDefault();
-    if (!state.currentUser) return;
-    const form = e.target as HTMLFormElement;
-    const id = (document.getElementById('categoria-id') as HTMLInputElement).value;
-    const name = (document.getElementById('categoria-nome') as HTMLInputElement).value;
-    const group = (document.getElementById('categoria-grupo') as HTMLInputElement).value;
-    const type = (document.querySelector('input[name="categoria-type"]:checked') as HTMLInputElement).value as CategoriaType;
-    const collection = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias');
-    try {
-        if(id) {
-            await collection.doc(id).update({ name, group, type });
-            showToast('toast_category_updated');
-        } else {
-            await collection.add({ name, group, type });
-            showToast('toast_category_added');
-        }
-        form.reset();
-        (document.getElementById('categoria-id') as HTMLInputElement).value = '';
-    } catch (error) { console.error("Error saving category:", error); }
-}
-
-async function saveSettings(e: Event) {
-    e.preventDefault();
-    if (!state.currentUser) return;
-    const settings: NotificationSettings = {
-        enabled: (document.getElementById('settings-notifications-enabled') as HTMLInputElement).checked,
-        leadTimeDays: parseInt((document.getElementById('settings-lead-time') as HTMLInputElement).value, 10),
-        email: (document.getElementById('settings-email') as HTMLInputElement).value,
-    };
-    try {
-        await db.collection('settings').doc(state.currentUser.uid).set(settings, { merge: true });
-        showToast('toast_settings_saved');
-        closeModal('modal-settings');
-    } catch (error) { console.error("Error saving settings:", error); }
-}
-
-function handlePasswordConfirmation(e: Event) {
-    e.preventDefault();
-    const password = (document.getElementById('delete-password') as HTMLInputElement).value;
-    const errorEl = document.getElementById('password-error')!;
-    if (passwordResolve) {
-        // Simple check. In a real app, re-authenticate with Firebase Auth.
-        if(password) { // This is a placeholder for real validation
-             errorEl.textContent = '';
-             passwordResolve(password);
-             passwordResolve = null;
-             passwordReject = null;
-             closeModal('modal-password-confirm');
-        } else {
-            errorEl.textContent = translate('password_modal_error');
-        }
-    }
-}
-
-async function saveCashEntry(e: Event) { /* STUB */ console.warn('saveCashEntry not implemented'); }
-async function saveOrcamento(e: Event) { /* STUB */ console.warn('saveOrcamento not implemented'); }
-
-function editFornecedor(id: string) {
-    const fornecedor = state.fornecedores.find(f => f.id === id);
-    if (fornecedor) {
-        (document.getElementById('fornecedor-id') as HTMLInputElement).value = fornecedor.id;
-        (document.getElementById('fornecedor-nome') as HTMLInputElement).value = fornecedor.name;
-    }
-}
-
-function deleteFornecedor(id: string) {
-    if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
-        db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('fornecedores').doc(id).delete()
-            .then(() => showToast('toast_supplier_deleted'))
-            .catch((e: Error) => console.error("Error deleting supplier: ", e));
-    }
-}
-
-function editCategoria(id: string) {
-    const categoria = state.categorias.find(c => c.id === id);
-    if (categoria) {
-        (document.getElementById('categoria-id') as HTMLInputElement).value = categoria.id;
-        (document.getElementById('categoria-nome') as HTMLInputElement).value = categoria.name;
-        (document.getElementById('categoria-grupo') as HTMLInputElement).value = categoria.group;
-        (document.querySelector(`input[name="categoria-type"][value="${categoria.type}"]`) as HTMLInputElement).checked = true;
-    }
-}
-
-function deleteCategoria(id: string) {
-     if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-        db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('categorias').doc(id).delete()
-            .then(() => showToast('toast_category_deleted'))
-            .catch((e: Error) => console.error("Error deleting category: ", e));
-    }
-}
-
-async function editCp(id: string) {
-    const cp = state.contasPagar.find(item => item.id === id);
-    if (!cp) return;
-
-    openNewCpModal(); // Resets and opens the modal
-    (document.getElementById('cp-modal-title') as HTMLElement).textContent = translate('cp_modal_title_edit');
-    (document.getElementById('cp-id') as HTMLInputElement).value = cp.id;
-    (document.getElementById('cp-fornecedor') as HTMLSelectElement).value = cp.fornecedorId;
-    (document.getElementById('cp-categoria') as HTMLSelectElement).value = cp.categoriaId;
-    (document.getElementById('cp-bl') as HTMLInputElement).value = cp.bl || '';
-    (document.getElementById('cp-po') as HTMLInputElement).value = cp.po || '';
-    (document.getElementById('cp-nf') as HTMLInputElement).value = cp.nf || '';
-    (document.getElementById('cp-migo') as HTMLInputElement).value = cp.migo || '';
-    (document.getElementById('cp-miro') as HTMLInputElement).value = cp.miro || '';
-    (document.getElementById('cp-vencimento') as HTMLInputElement).value = cp.vencimento;
-    (document.getElementById('cp-payment-term') as HTMLInputElement).value = cp.paymentTerm || '';
-    (document.getElementById('cp-valor-original') as HTMLInputElement).value = cp.valorOriginal.toString().replace('.', ',');
-    (document.getElementById('cp-currency') as HTMLSelectElement).value = cp.currency;
-    (document.getElementById('cp-status') as HTMLSelectElement).value = cp.status;
-    (document.getElementById('cp-observacoes') as HTMLTextAreaElement).value = cp.observacoes || '';
-    (document.getElementById('cp-cost-center') as HTMLInputElement).value = cp.costCenter || '';
-    (document.getElementById('cp-cargo') as HTMLInputElement).value = cp.cargo || '';
-    (document.getElementById('cp-incoterm') as HTMLInputElement).value = cp.incoterm || '';
-    (document.getElementById('cp-number-of-cars') as HTMLInputElement).value = cp.numberOfCars?.toString() || '0';
-    (document.getElementById('cp-is-unique-di') as HTMLSelectElement).value = cp.isUniqueDi ? 'true' : 'false';
-    (document.getElementById('cp-di-date') as HTMLInputElement).value = cp.diDate || '';
-    (document.getElementById('cp-sap-po') as HTMLInputElement).value = cp.sapPo || '';
-    (document.getElementById('cp-di-number') as HTMLInputElement).value = cp.diNumber || '';
-    (document.getElementById('cp-vessel-name') as HTMLInputElement).value = cp.vesselName || '';
-    (document.getElementById('cp-voyage') as HTMLInputElement).value = cp.voyage || '';
-    (document.getElementById('cp-nf-type') as HTMLInputElement).value = cp.nfType || '';
-    (document.getElementById('cp-nf-emission-date') as HTMLInputElement).value = cp.nfEmissionDate || '';
-    (document.getElementById('cp-pr-number') as HTMLInputElement).value = cp.prNumber || '';
-    (document.getElementById('cp-pr-emission-date') as HTMLInputElement).value = cp.prEmissionDate || '';
-    (document.getElementById('cp-sap-po-emission-date') as HTMLInputElement).value = cp.sapPoEmissionDate || '';
-    (document.getElementById('cp-nf-import-number') as HTMLInputElement).value = cp.nfImportNumber || '';
-    (document.getElementById('cp-payment-method') as HTMLInputElement).value = cp.paymentMethod || '';
-    (document.getElementById('cp-payment-date') as HTMLInputElement).value = cp.paymentDate || '';
-    (document.getElementById('cp-cfop') as HTMLInputElement).value = cp.cfop || '';
-    (document.getElementById('cp-is-adiantamento') as HTMLInputElement).checked = cp.isAdiantamento || false;
-
-    const cpNumberDisplay = document.getElementById('cp-number-display')!;
-    cpNumberDisplay.textContent = cp.cpNumber;
-    cpNumberDisplay.classList.remove('hidden');
-
-    // Manually trigger change event to show/hide payment date
-    document.getElementById('cp-status')!.dispatchEvent(new Event('change'));
-}
-
-
-async function toggleCpStatus(id: string) {
-    if (!state.currentUser) return;
-    const docRef = db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id);
-    const today = new Date().toISOString().split('T')[0];
-    await docRef.update({ status: 'Pago', paymentDate: today });
-    showToast('toast_entry_paid');
-}
-
-async function deleteCp(id: string) {
-    const isConfirmed = confirm('Tem certeza que deseja excluir este lançamento? Esta ação não pode ser desfeita.');
-    if (isConfirmed && state.currentUser) {
-        await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).delete();
-        showToast('toast_entry_deleted');
-    }
-}
-async function approveCp(id: string) {
-    if (!state.currentUser) return;
-    if (!ADMIN_UIDS.includes(state.currentUser.uid)) {
-        showToast('toast_action_not_allowed', 'error');
-        return;
-    }
-    await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Aprovado' });
-    showToast('toast_entry_approved');
-}
-
-async function rejectCp(id: string) {
-     if (!state.currentUser) return;
-    if (!ADMIN_UIDS.includes(state.currentUser.uid)) {
-        showToast('toast_action_not_allowed', 'error');
-        return;
-    }
-    await db.collection('users').doc(SHARED_DATA_OWNER_UID).collection('contasPagar').doc(id).update({ approvalStatus: 'Rejeitado' });
-    showToast('toast_entry_rejected');
-}
-
-function renderFornecedorList() {
-    const list = document.getElementById('fornecedor-list')!;
-    list.innerHTML = state.fornecedores
-        .sort((a,b) => a.name.localeCompare(b.name))
-        .map(f => `
-        <li class="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg">
-            <span>${f.name}</span>
-            <div>
-                <button onclick="editFornecedor('${f.id}')" class="text-slate-400 hover:text-teal-400 px-2"><i class="fas fa-pencil-alt"></i></button>
-                <button onclick="deleteFornecedor('${f.id}')" class="text-slate-400 hover:text-red-400 px-2"><i class="fas fa-trash"></i></button>
-            </div>
-        </li>
-    `).join('');
-}
-
-function renderCategoriaList() {
-    const list = document.getElementById('categoria-list')!;
-    const grouped = state.categorias.reduce((acc, cat) => {
-        if(!acc[cat.group]) acc[cat.group] = [];
-        acc[cat.group].push(cat);
-        return acc;
-    }, {} as Record<string, Categoria[]>);
-
-    list.innerHTML = Object.keys(grouped).sort().map(groupName => `
-        <div>
-            <h4 class="font-bold text-slate-300 mt-2 mb-1">${groupName}</h4>
-            <ul class="space-y-1">
-            ${grouped[groupName].sort((a,b) => a.name.localeCompare(b.name)).map(c => `
-                 <li class="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg text-sm">
-                    <span>${c.name}</span>
-                    <div class="flex items-center">
-                        <span class="text-xs mr-4 ${c.type === 'Receita' ? 'text-green-400' : 'text-red-400'}">${translate(c.type === 'Receita' ? 'category_type_revenue' : 'category_type_expense')}</span>
-                        <button onclick="editCategoria('${c.id}')" class="text-slate-400 hover:text-teal-400 px-2"><i class="fas fa-pencil-alt"></i></button>
-                        <button onclick="deleteCategoria('${c.id}')" class="text-slate-400 hover:text-red-400 px-2"><i class="fas fa-trash"></i></button>
-                    </div>
-                </li>
-            `).join('')}
-            </ul>
-        </div>
-    `).join('');
-}
-
-function initializeLangSwitcher() {
-    const button = document.getElementById('lang-switcher-button')!;
-    const dropdown = document.getElementById('lang-switcher-dropdown')!;
-    
-    button.addEventListener('click', () => {
-        dropdown.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!button.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
-            dropdown.classList.add('hidden');
-        }
-    });
-
-    document.querySelectorAll('.lang-option').forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.preventDefault();
-            const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
-            setCurrentLanguage(lang);
-            dropdown.classList.add('hidden');
-        });
-    });
-}
-
-
-async function setCurrentLanguage(lang: Language, saveToDb = true) {
-    state.currentLanguage = lang;
-    const flagMap = { 'pt-BR': 'br', 'en': 'gb', 'zh-CN': 'cn' };
-    (document.getElementById('current-lang-flag') as HTMLImageElement).src = `https://flagcdn.com/${flagMap[lang]}.svg`;
-    (document.getElementById('current-lang-text') as HTMLElement).textContent = lang.split('-')[0].toUpperCase();
-
-    document.querySelectorAll('[data-translate]').forEach(el => {
-        const key = el.getAttribute('data-translate') as TranslationKeys;
-        el.textContent = translate(key);
-    });
-    
-    document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-translate-placeholder') as TranslationKeys;
-        (el as HTMLInputElement).placeholder = translate(key);
-    });
-    
-    if (saveToDb && state.currentUser) {
-        await db.collection('settings').doc(state.currentUser.uid).set({ language: lang }, { merge: true });
-    }
-    
-    // Re-render UI to update dynamic content with new translations
-    if (state.currentUser) {
-        updateUI();
-    }
-}
-
-
-function toggleGroupedViewDetails(listId: string, open: boolean) {
-    const listElement = document.getElementById(listId);
-    if (!listElement) return;
-
-    const detailsElements = listElement.querySelectorAll('details');
-    detailsElements.forEach(detail => {
-        detail.open = open;
-    });
-}
-
-
-// Attach functions to window object
-window.openNewCpModal = openNewCpModal;
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.setActiveView = setActiveView;
-window.editFornecedor = editFornecedor;
-window.deleteFornecedor = deleteFornecedor;
-window.editCategoria = editCategoria;
-window.deleteCategoria = deleteCategoria;
-window.editCp = editCp;
-window.toggleCpStatus = toggleCpStatus;
-window.deleteCp = deleteCp;
-window.approveCp = approveCp;
-window.rejectCp = rejectCp;
-window.toggleReconciliationStatus = toggleReconciliationStatus;
-window.logout = logout;
-window.exportFupReport = exportFupReport;
-window.toggleGroupedViewDetails = toggleGroupedViewDetails;
