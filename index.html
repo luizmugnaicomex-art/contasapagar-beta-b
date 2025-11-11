@@ -15,14 +15,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link rel="stylesheet" href="index.css">
     <script type="importmap">
-      {
-        "imports": {
-          "@google/genai": "https://esm.sh/@google/genai@^0.7.0"
-        }
-      }
-    </script>
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "chart.js": "https://aistudiocdn.com/chart.js@^4.5.1"
+  }
+}
+</script>
     <script type="module" src="index.js"></script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-slate-900 text-slate-300">
 
@@ -146,7 +149,7 @@
                                             <i class="fas fa-upload"></i><span data-translate="upload_history_button">upload Historico</span>
                                         </button>
                                         <input type="file" id="historico-upload-input" class="hidden" accept=".xlsx, .xls">
-                                        <button onclick="openModal('modal-cp')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex-shrink-0 transition-transform transform hover:scale-105">
+                                        <button onclick="openNewCpModal()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex-shrink-0 transition-transform transform hover:scale-105">
                                             <i class="fas fa-plus mr-2"></i><span data-translate="new_entry_button">Novo Lançamento</span>
                                         </button>
                                     </div>
@@ -391,10 +394,18 @@
     
                     <!-- Custos por BL View -->
                     <div id="bl-view" class="view-container hidden">
-                        <div class="mb-4">
+                        <div class="flex justify-between items-center mb-4">
                             <div class="relative">
                                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                                 <input type="text" id="bl-filter-input" data-translate-placeholder="filter_bl_placeholder" placeholder="Buscar por BL..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div class="flex items-center gap-2">
+                                <button onclick="toggleGroupedViewDetails('bl-list', true)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-plus-square"></i> <span data-translate="expand_all">Expandir Tudo</span>
+                                </button>
+                                <button onclick="toggleGroupedViewDetails('bl-list', false)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-minus-square"></i> <span data-translate="collapse_all">Recolher Tudo</span>
+                                </button>
                             </div>
                         </div>
                         <div id="bl-list" class="space-y-4">
@@ -408,10 +419,18 @@
     
                     <!-- Custos por PO View -->
                     <div id="po-view" class="view-container hidden">
-                        <div class="mb-4">
+                         <div class="flex justify-between items-center mb-4">
                             <div class="relative">
                                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                                 <input type="text" id="po-filter-input" data-translate-placeholder="filter_po_placeholder" placeholder="Buscar por PO..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleGroupedViewDetails('po-list', true)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-plus-square"></i> <span data-translate="expand_all">Expandir Tudo</span>
+                                </button>
+                                <button onclick="toggleGroupedViewDetails('po-list', false)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-minus-square"></i> <span data-translate="collapse_all">Recolher Tudo</span>
+                                </button>
                             </div>
                         </div>
                         <div id="po-list" class="space-y-4">
@@ -425,10 +444,18 @@
     
                     <!-- Custos por DI View -->
                     <div id="di-view" class="view-container hidden">
-                         <div class="mb-4">
+                         <div class="flex justify-between items-center mb-4">
                             <div class="relative">
                                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                                 <input type="text" id="di-filter-input" data-translate-placeholder="filter_di_placeholder" placeholder="Buscar por Nº DI..." class="bg-slate-900/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 w-full max-w-md focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                             <div class="flex items-center gap-2">
+                                <button onclick="toggleGroupedViewDetails('di-list', true)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-plus-square"></i> <span data-translate="expand_all">Expandir Tudo</span>
+                                </button>
+                                <button onclick="toggleGroupedViewDetails('di-list', false)" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                    <i class="far fa-minus-square"></i> <span data-translate="collapse_all">Recolher Tudo</span>
+                                </button>
                             </div>
                         </div>
                         <div id="di-list" class="space-y-4">
@@ -445,7 +472,7 @@
                         <div class="bg-slate-800 rounded-xl shadow-lg p-6">
                              <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
                                 <h2 class="text-lg font-bold text-slate-100" data-translate="fup_title">Relatório FUP - Custos Consolidados por Operação</h2>
-                                <button id="export-fup-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-auto flex-shrink-0 transition-transform transform hover:scale-105">
+                                <button id="export-fup-btn" onclick="exportFupReport()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-auto flex-shrink-0 transition-transform transform hover:scale-105">
                                     <i class="fas fa-file-excel mr-2"></i><span data-translate="fup_export_xlsx">Exportar XLSX</span>
                                 </button>
                             </div>
@@ -584,6 +611,17 @@
                                 <input type="text" id="cp-incoterm" placeholder="Ex: FOB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
                             </div>
                             <div>
+                                <label for="cp-number-of-cars" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_number_of_cars">Number of Cars</label>
+                                <input type="number" id="cp-number-of-cars" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="cp-is-unique-di" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_unique_di">Unique DI</label>
+                                <select id="cp-is-unique-di" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                    <option value="false" data-translate="option_no">No</option>
+                                    <option value="true" data-translate="option_yes">Yes</option>
+                                </select>
+                            </div>
+                            <div>
                                 <label for="cp-vessel-name" class="block text-sm font-medium text-slate-400 mb-1" data-translate="form_label_vessel_name">Nome do Navio</label>
                                 <input type="text" id="cp-vessel-name" placeholder="Ex: MSC MARY" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
                             </div>
@@ -656,7 +694,7 @@
                             </div>
                             <div>
                                 <label for="cp-valor-original" class="block text-sm font-medium text-slate-400 mb-1"><span data-translate="form_label_value">Valor</span> *</label>
-                                <input type="number" step="0.01" id="cp-valor-original" placeholder="1500,00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
+                                <input type="text" id="cp-valor-original" placeholder="1500,00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition">
                             </div>
                         </div>
                         <div>
@@ -911,6 +949,5 @@
             </div>
         </div>
     </div>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
